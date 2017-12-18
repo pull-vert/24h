@@ -10,9 +10,7 @@ import reactor.test.test
 
 @ExtendWith(SpringExtension::class)
 @SpringBootTest
-class RoleRepositoryTest {
-    @Autowired
-    lateinit var roleRepository: RoleRepository
+class RoleRepositoryTest(@Autowired val roleRepository: RoleRepository) {
 
     @Test
     fun `Assert findById returns expected Document`() {
