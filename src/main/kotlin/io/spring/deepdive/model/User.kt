@@ -17,6 +17,7 @@ package io.spring.deepdive.model
 
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.Id
+import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.mongodb.core.mapping.Document
 import org.springframework.security.core.userdetails.UserDetails
 import java.time.LocalDateTime
@@ -26,19 +27,20 @@ import javax.validation.constraints.Email
 data class User(
         @Id private val username: String, // private to avoid conflict with getPassword java method from UserDetails
         private val password: String, // private to avoid conflict with getPassword java method from UserDetails
-        val firstname: String,
-        val lastname: String,
         @Email val email: String,
-        val roles: Set<Role>,
+        val firstname: String? = null,
+        val lastname: String? = null,
+        val roles: Set<Role> = setOf(Role.USER), // By Default : Role = USER
         val description: String? = null,
         val active: Boolean = true,
-        @CreatedDate val addedAt: LocalDateTime = LocalDateTime.now()) : UserDetails {
+        @CreatedDate val addedAt: LocalDateTime = LocalDateTime.now(),
+        @LastModifiedDate val lastModifiedAt: LocalDateTime = LocalDateTime.now()) : UserDetails {
     override fun getAuthorities() = roles
 
     override fun getUsername() = username
     override fun getPassword() = password
 
-    override fun getName() = "$firstname $lastname"
+    override fun getName() = "$username $firstname $lastname"
 
     override fun isEnabled() = active
     override fun isCredentialsNonExpired() = active

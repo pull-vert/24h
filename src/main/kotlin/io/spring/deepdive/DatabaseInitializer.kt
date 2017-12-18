@@ -40,8 +40,8 @@ class DatabaseInitializer(
     override fun run(vararg args: String) {
         ops.createCollection(PostEvent::class.java, CollectionOptions.empty().capped().size(10000))
 
-        val seb = User("sdeleuze", passwordEncoder.encode("password"), "Sebastien", "Deleuze", "sdeleuze@pivotal.com", setOf(USER, ADMIN), "Spring Framework committer @Pivotal, @Kotlin addict, #WebAssembly believer, @mixitconf organizer, #techactivism")
-        val simon = User("simonbasle", passwordEncoder.encode("password"),"Simon", "Basle", "simonbasle@pivotal.com", setOf(USER)/*, "software development aficionado, Reactor Software Engineer @pivotal"*/)
+        val seb = User("sdeleuze", passwordEncoder.encode("password"), "sdeleuze@pivotal.com", "Sebastien", "Deleuze", setOf(USER, ADMIN), "Spring Framework committer @Pivotal, @Kotlin addict, #WebAssembly believer, @mixitconf organizer, #techactivism")
+        val simon = User("simonbasle", passwordEncoder.encode("password"), "simonbasle@pivotal.com","Simon", "Basle", description = "software development aficionado, Reactor Software Engineer @pivotal")
         userRepository.saveAll(listOf(seb, simon)).blockLast()
 
         val reactorTitle = "Reactor Bismuth is out"
