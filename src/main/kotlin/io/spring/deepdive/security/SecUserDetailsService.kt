@@ -23,6 +23,6 @@ import org.springframework.stereotype.Component
 @Component
 class SecUserDetailsService(val userRepository: UserRepository) : ReactiveUserDetailsService {
     override fun findByUsername(username: String?) =
-            userRepository.findById(checkNotNull(username, { "username must not be null !" }))
+            userRepository.findByUsername(checkNotNull(username, { "username must not be null !" }))
                     .cast(UserDetails::class.java) // cast User to UserDetails
 }

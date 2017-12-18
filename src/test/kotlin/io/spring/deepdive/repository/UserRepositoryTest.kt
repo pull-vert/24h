@@ -31,8 +31,21 @@ import java.time.Duration
 class UserRepositoryTest(@Autowired val userRepository: UserRepository) {
 
     @Test
-    fun `Assert findById returns expected Document`() {
-        userRepository.findById("sdeleuze")
+    fun `Assert findByUsername returns expected min Document`() {
+        userRepository.findByUsername("min")
+                .test()
+                .consumeNextWith {
+                    assertThat(it.lastname).isNull()
+                    assertThat(it.name).isEqualTo("min")
+                    assertThat(it.roles).hasSize(1).containsExactly(USER)
+                    assertThat(it.createdDate).isNotNull()
+                    assertThat(it.lastModifiedDate).isNotNull()
+                }.verifyComplete()
+    }
+
+    @Test
+    fun `Assert findByUsername returns expected Document`() {
+        userRepository.findByUsername("sdeleuze")
                 .test()
                 .consumeNextWith {
                     assertThat(it.lastname).isEqualTo("Deleuze")
@@ -45,33 +58,21 @@ class UserRepositoryTest(@Autowired val userRepository: UserRepository) {
 
     @Test
     fun `Assert save modify lastModifiedDate but not createdDate`() {
-        userRepository.findById("sdeleuze")
+        userRepository.findByUsername("sdeleuze")
                 .test()
                 .consumeNextWith {
                     val createdDate = it.createdDate
                     val lastModifiedDate = it.lastModifiedDate
-                    it.firstname = "seb"
+                    it.email = "sebdeleuze@pivotal.com"
                     userRepository.save(it)
                             .delayElement(Duration.ofMillis(2))
                             .test()
                             .consumeNextWith {
-                                assertThat(it.firstname).isEqualTo("seb")
+                                println("id = ${it.id}")
+                                assertThat(it.email).isEqualTo("sebdeleuze@pivotal.com")
                                 assertThat(it.createdDate).isEqualTo(createdDate)
                                 assertThat(it.lastModifiedDate).isNotEqualTo(lastModifiedDate)
                             }.verifyComplete()
-                }.verifyComplete()
-    }
-
-    @Test
-    fun `Assert findById returns expected min Document`() {
-        userRepository.findById("min")
-                .test()
-                .consumeNextWith {
-                    assertThat(it.lastname).isNull()
-                    assertThat(it.name).isEqualTo("min")
-                    assertThat(it.roles).hasSize(1).containsExactly(USER)
-                    assertThat(it.createdDate).isNotNull()
-                    assertThat(it.lastModifiedDate).isNotNull()
                 }.verifyComplete()
     }
 }

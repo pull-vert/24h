@@ -31,7 +31,7 @@ class Router(private val userHandler: UserHandler,
             "/api/user".nest {
                 GET("/principal/", userHandler::principal)
                 GET("/", userHandler::findAll)
-                GET("/{login}", userHandler::findOne)
+                GET("/{username}", userHandler::findByUsername)
             }
             "/api/post".nest {
                 GET("/", postHandler::findAll)

@@ -35,7 +35,7 @@ class UserHandler(private val repository: UserRepository) {
 
     fun findAll(req: ServerRequest) = ok().body(repository.findAll())
 
-    fun findOne(req: ServerRequest) =
-            ok().body(repository.findById(req.pathVariable("login")))
+    fun findByUsername(req: ServerRequest) =
+            ok().body(repository.findByUsername(req.pathVariable("username")))
 
 }

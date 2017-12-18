@@ -15,33 +15,21 @@
  */
 package io.spring.deepdive.model
 
-import org.springframework.data.annotation.CreatedDate
-import org.springframework.data.annotation.Id
-import org.springframework.data.annotation.LastModifiedDate
-import org.springframework.data.domain.Persistable
 import org.springframework.data.mongodb.core.mapping.Document
 import org.springframework.security.core.userdetails.UserDetails
-import java.time.LocalDateTime
 import javax.validation.constraints.Email
 
 @Document
 data class User(
-        @Id private val username: String, // private to avoid conflict with getPassword java method from UserDetails
-        private val password: String, // private to avoid conflict with getPassword java method from UserDetails
-        @Email val email: String,
+        internal var username: String, // internal to avoid conflict with getPassword java method from UserDetails
+        internal var password: String, // internal to avoid conflict with getPassword java method from UserDetails
+        @Email var email: String,
         var firstname: String? = null,
-        val lastname: String? = null,
-        val roles: Set<Role> = setOf(Role.USER), // By Default : Role = USER
-        val description: String? = null,
-        val active: Boolean = true,
-        @CreatedDate var createdDate: LocalDateTime? = null,
-        @LastModifiedDate var lastModifiedDate: LocalDateTime? = null
-) : UserDetails, Persistable<String> {
-
-    // Persistable functions
-    override fun isNew() = (null == createdDate)
-    override fun getId() = username
-
+        var lastname: String? = null,
+        var roles: Set<Role> = setOf(Role.USER), // Default : USER
+        var description: String? = null,
+        var active: Boolean = true
+) : Auditable(), UserDetails {
     // UserDetails functions
     override fun getAuthorities() = roles
     override fun getUsername() = username
