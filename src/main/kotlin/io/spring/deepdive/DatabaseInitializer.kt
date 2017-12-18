@@ -40,9 +40,10 @@ class DatabaseInitializer(
     override fun run(vararg args: String) {
         ops.createCollection(PostEvent::class.java, CollectionOptions.empty().capped().size(10000))
 
+        val min = User("min", "password", "min")
         val seb = User("sdeleuze", passwordEncoder.encode("password"), "sdeleuze@pivotal.com", "Sebastien", "Deleuze", setOf(USER, ADMIN), "Spring Framework committer @Pivotal, @Kotlin addict, #WebAssembly believer, @mixitconf organizer, #techactivism")
         val simon = User("simonbasle", passwordEncoder.encode("password"), "simonbasle@pivotal.com","Simon", "Basle", description = "software development aficionado, Reactor Software Engineer @pivotal")
-        userRepository.saveAll(listOf(seb, simon)).blockLast()
+        userRepository.saveAll(listOf(min, seb, simon)).blockLast()
 
         val reactorTitle = "Reactor Bismuth is out"
         val reactorPost = Post(

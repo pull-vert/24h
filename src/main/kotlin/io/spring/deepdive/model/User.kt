@@ -18,6 +18,7 @@ package io.spring.deepdive.model
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.Id
 import org.springframework.data.annotation.LastModifiedDate
+import org.springframework.data.domain.Persistable
 import org.springframework.data.mongodb.core.mapping.Document
 import org.springframework.security.core.userdetails.UserDetails
 import java.time.LocalDateTime
@@ -32,18 +33,27 @@ data class User(
         val lastname: String? = null,
         val roles: Set<Role> = setOf(Role.USER), // By Default : Role = USER
         val description: String? = null,
-        val active: Boolean = true,
-        @CreatedDate val addedAt: LocalDateTime = LocalDateTime.now(),
-        @LastModifiedDate val lastModifiedAt: LocalDateTime = LocalDateTime.now()) : UserDetails {
-    override fun getAuthorities() = roles
+        val active: Boolean = true
+) : UserDetails, Persistable<String> {
 
+    @CreatedDate
+    lateinit var createdDate: LocalDateTime
+    @LastModifiedDate
+    lateinit var lastModifiedDate: LocalDateTime
+
+    // Persistable functions
+    override fun isNew() = this::createdDate.isInitialized
+    override fun getId() = username
+
+    // UserDetails functions
+    override fun getAuthorities() = roles
     override fun getUsername() = username
     override fun getPassword() = password
-
-    override fun getName() = "$username $firstname $lastname"
-
     override fun isEnabled() = active
     override fun isCredentialsNonExpired() = active
     override fun isAccountNonExpired() = active
     override fun isAccountNonLocked() = active
+
+    // AuthenticatedPrincipal function
+    override fun getName() = "$username${if (null != firstname) " : $firstname $lastname" else ""}"
 }

@@ -20,7 +20,23 @@ class UserRepositoryTest(@Autowired val userRepository: UserRepository) {
                 .test()
                 .consumeNextWith {
                     assertThat(it.lastname).isEqualTo("Deleuze")
+                    assertThat(it.name).isEqualTo("sdeleuze : Sebastien Deleuze")
                     assertThat(it.roles).hasSize(2).containsExactly(USER, ADMIN)
+                    assertThat(it.createdDate).isNotNull()
+                    assertThat(it.lastModifiedDate).isNotNull()
+                }.verifyComplete()
+    }
+
+    @Test
+    fun `Assert findById returns expected min Document`() {
+        userRepository.findById("min")
+                .test()
+                .consumeNextWith {
+                    assertThat(it.lastname).isNull()
+                    assertThat(it.name).isEqualTo("min")
+                    assertThat(it.roles).hasSize(1).containsExactly(USER)
+//                    assertThat(it.createdDate).isNotNull()
+//                    assertThat(it.lastModifiedDate).isNotNull()
                 }.verifyComplete()
     }
 }
