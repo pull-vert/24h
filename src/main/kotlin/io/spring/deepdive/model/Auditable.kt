@@ -23,9 +23,9 @@ import java.time.LocalDateTime
 import java.util.*
 
 abstract class Auditable(
+        @Id private val id: Any = UUID.randomUUID(),
         @CreatedDate var createdDate: LocalDateTime? = null,
-        @LastModifiedDate var lastModifiedDate: LocalDateTime? = null,
-        @Id private val id: Any = UUID.randomUUID()): Persistable<Any> {
+        @LastModifiedDate var lastModifiedDate: LocalDateTime? = null): Persistable<Any> {
     // Persistable functions
     override fun isNew() = (null == createdDate)
     override fun getId() = id
