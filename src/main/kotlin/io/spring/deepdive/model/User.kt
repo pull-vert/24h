@@ -29,20 +29,17 @@ data class User(
         @Id private val username: String, // private to avoid conflict with getPassword java method from UserDetails
         private val password: String, // private to avoid conflict with getPassword java method from UserDetails
         @Email val email: String,
-        val firstname: String? = null,
+        var firstname: String? = null,
         val lastname: String? = null,
         val roles: Set<Role> = setOf(Role.USER), // By Default : Role = USER
         val description: String? = null,
-        val active: Boolean = true
+        val active: Boolean = true,
+        @CreatedDate var createdDate: LocalDateTime? = null,
+        @LastModifiedDate var lastModifiedDate: LocalDateTime? = null
 ) : UserDetails, Persistable<String> {
 
-    @CreatedDate
-    lateinit var createdDate: LocalDateTime
-    @LastModifiedDate
-    lateinit var lastModifiedDate: LocalDateTime
-
     // Persistable functions
-    override fun isNew() = this::createdDate.isInitialized
+    override fun isNew() = (null == createdDate)
     override fun getId() = username
 
     // UserDetails functions
