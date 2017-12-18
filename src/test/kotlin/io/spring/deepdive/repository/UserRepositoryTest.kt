@@ -1,7 +1,7 @@
 package io.spring.deepdive.repository
 
-import io.spring.deepdive.model.roleAdmin
-import io.spring.deepdive.model.roleUser
+import io.spring.deepdive.model.Role.ADMIN
+import io.spring.deepdive.model.Role.USER
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -20,7 +20,7 @@ class UserRepositoryTest(@Autowired val userRepository: UserRepository) {
                 .test()
                 .consumeNextWith {
                     assertThat(it.lastname).isEqualTo("Deleuze")
-                    assertThat(it.roles).hasSize(2).containsExactly(roleUser, roleAdmin)
+                    assertThat(it.roles).hasSize(2).containsExactly(USER, ADMIN)
                 }.verifyComplete()
     }
 }

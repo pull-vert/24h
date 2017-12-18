@@ -15,10 +15,12 @@
  */
 package io.spring.deepdive
 
-
-import io.spring.deepdive.model.*
+import io.spring.deepdive.model.Post
+import io.spring.deepdive.model.PostEvent
+import io.spring.deepdive.model.Role.ADMIN
+import io.spring.deepdive.model.Role.USER
+import io.spring.deepdive.model.User
 import io.spring.deepdive.repository.PostRepository
-import io.spring.deepdive.repository.RoleRepository
 import io.spring.deepdive.repository.UserRepository
 import org.springframework.boot.CommandLineRunner
 import org.springframework.data.mongodb.core.CollectionOptions
@@ -31,7 +33,6 @@ import java.time.LocalDateTime
 @Component
 class DatabaseInitializer(
         private val ops: MongoOperations,
-        private val roleRepository: RoleRepository,
         private val userRepository: UserRepository,
         private val postRepository: PostRepository,
         private val passwordEncoder: PasswordEncoder) : CommandLineRunner {
@@ -39,10 +40,8 @@ class DatabaseInitializer(
     override fun run(vararg args: String) {
         ops.createCollection(PostEvent::class.java, CollectionOptions.empty().capped().size(10000))
 
-        roleRepository.saveAll(listOf(roleAdmin, roleUser)).blockLast()
-
-        val seb = User("sdeleuze", passwordEncoder.encode("password"), "Sebastien", "Deleuze", "sdeleuze@pivotal.com", listOf(roleUser, roleAdmin), "Spring Framework committer @Pivotal, @Kotlin addict, #WebAssembly believer, @mixitconf organizer, #techactivism")
-        val simon = User("simonbasle", passwordEncoder.encode("password"),"Simon", "Basle", "simonbasle@pivotal.com", listOf(roleUser)/*, "software development aficionado, Reactor Software Engineer @pivotal"*/)
+        val seb = User("sdeleuze", passwordEncoder.encode("password"), "Sebastien", "Deleuze", "sdeleuze@pivotal.com", setOf(USER, ADMIN), "Spring Framework committer @Pivotal, @Kotlin addict, #WebAssembly believer, @mixitconf organizer, #techactivism")
+        val simon = User("simonbasle", passwordEncoder.encode("password"),"Simon", "Basle", "simonbasle@pivotal.com", setOf(USER)/*, "software development aficionado, Reactor Software Engineer @pivotal"*/)
         userRepository.saveAll(listOf(seb, simon)).blockLast()
 
         val reactorTitle = "Reactor Bismuth is out"
