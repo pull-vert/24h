@@ -30,9 +30,9 @@ docker images
 To delete the image :
 docker rmi 24h-back
 Then
-docker build -t 24h-back .
+docker build -t 24h-back:latest .
 
-###Run image
+###Run container from image
 First verify that you don't have a container ruuning with
 docker ps THEN docker ps -a
 If a container is running (or use the id of the container) :
@@ -40,7 +40,10 @@ docker stop 24h-back
 To delete the container (or use the id of the container) :
 docker rm 24h-back
 Then :
-docker run --name 24h-back -p 8080:8080 -t 24h-back
+1) Start mongo (if not already started)
+docker run -d -p 27000:27017 --name mongo mongo
+2) start spring boot app, with link to mongo
+docker run -p 8080:8080 --name 24h-back --link=mongo 24h-back
 
 **The end!**
 

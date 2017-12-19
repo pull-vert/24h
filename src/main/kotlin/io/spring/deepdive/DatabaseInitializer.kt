@@ -38,12 +38,15 @@ class DatabaseInitializer(
         private val passwordEncoder: PasswordEncoder) : CommandLineRunner {
 
     override fun run(vararg args: String) {
+        ops.dropCollection(PostEvent::class.java)
         ops.createCollection(PostEvent::class.java, CollectionOptions.empty().capped().size(10000))
 
         val min = User("min", "password", "min")
         val seb = User("sdeleuze", passwordEncoder.encode("password"), "sdeleuze@pivotal.com", "Sebastien", "Deleuze", setOf(USER, ADMIN), "Spring Framework committer @Pivotal, @Kotlin addict, #WebAssembly believer, @mixitconf organizer, #techactivism")
-        val simon = User("simonbasle", passwordEncoder.encode("password"), "simonbasle@pivotal.com","Simon", "Basle", description = "software development aficionado, Reactor Software Engineer @pivotal")
-        userRepository.saveAll(listOf(min, seb, simon)).blockLast()
+        val simon = User("simonbasle", passwordEncoder.encode("password"), "simonbasle@pivotal.com", "Simon", "Basle", description = "software development aficionado, Reactor Software Engineer @pivotal")
+        userRepository.deleteAll()
+                .thenMany(userRepository.saveAll(listOf(min, seb, simon)))
+                .blockLast()
 
         val reactorTitle = "Reactor Bismuth is out"
         val reactorPost = Post(
@@ -86,6 +89,8 @@ class DatabaseInitializer(
                 "sdeleuze",
                 LocalDateTime.of(2017, 1, 4, 9, 0)
         )
-        postRepository.saveAll(listOf(reactorPost, spring5Post, springKotlinPost)).blockLast()
+        postRepository.deleteAll()
+                .thenMany(postRepository.saveAll(listOf(reactorPost, spring5Post, springKotlinPost)))
+                .blockLast()
     }
 }
