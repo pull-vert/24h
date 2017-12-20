@@ -41,7 +41,7 @@ To delete the container (or use the id of the container) :
 docker rm 24h-back
 Then :
 1) Start mongo (if not already started)
-docker run -d -p 27000:27017 --name mongo mongo
+docker run -d -p 27017:27017 --name mongo mongo
 2) start spring boot app, with link to mongo
 docker run -p 8080:8080 --name 24h-back --link=mongo 24h-back
 
