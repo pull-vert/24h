@@ -17,14 +17,14 @@ See [Spring Kotlin support documentation](https://docs.spring.io/spring/docs/cur
 * Router DSL
 * Handlers
 
-##Build with gradle
+## Build with gradle
 
 execute :
 gradlew clean bootJar
 
-##Docker
+## Docker
 
-###Build image
+### Build image
 To list images :
 docker images
 To delete the image :
@@ -32,7 +32,7 @@ docker rmi 24h-back
 Then
 docker build -t 24h-back:latest .
 
-###Run container from image
+### Run container from image
 First verify that you don't have a container ruuning with
 docker ps THEN docker ps -a
 If a container is running (or use the id of the container) :
