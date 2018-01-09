@@ -39,7 +39,7 @@ class UserJsonApiTests(@LocalServerPort port: Int) {
     fun `Assert FindAll JSON API is parsed correctly and contains 11 elements`() {
         client.get().uri("/api/user/").addAuthHeader().retrieve().bodyToFlux<User>()
                 .test()
-                .expectNextCount(2)
+                .expectNextCount(3)
                 .verifyComplete()
     }
 
