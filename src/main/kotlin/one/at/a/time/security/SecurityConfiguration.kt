@@ -17,21 +17,35 @@ package one.at.a.time.security
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity
+import org.springframework.security.config.web.server.ServerHttpSecurity
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
+import org.springframework.security.web.server.SecurityWebFilterChain
 
 
 @Configuration
 @EnableWebFluxSecurity
+@EnableReactiveMethodSecurity
 class SecurityConfiguration {
 
     /**
      * The default password encoder, used for encoding password in User Document
-     * And used to decode password in Spring security Athentication
+     * And used to decode password in Spring security Authentication
      */
     @Bean
     fun passwordEncoder(): PasswordEncoder {
         return BCryptPasswordEncoder()
+    }
+
+    @Bean
+    fun securitygWebFilterChain(
+            http: ServerHttpSecurity): SecurityWebFilterChain {
+        return http.authorizeExchange()
+//                .pathMatchers("/admin").hasAuthority("ROLE_ADMIN") todo example, uncomment if endpoints need ADMIN role
+                .anyExchange().authenticated()
+                .and().httpBasic().and()
+                .build()
     }
 }

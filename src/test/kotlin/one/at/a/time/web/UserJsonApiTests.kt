@@ -36,7 +36,7 @@ class UserJsonApiTests(@LocalServerPort port: Int) {
     private val client = WebClient.create("http://localhost:$port")
 
     @Test
-    fun `Assert FindAll JSON API is parsed correctly and contains 11 elements`() {
+    fun `Assert FindAll JSON API is parsed correctly and contains 3 elements`() {
         client.get().uri("/api/user/").addAuthHeader().retrieve().bodyToFlux<User>()
                 .test()
                 .expectNextCount(3)

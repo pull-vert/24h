@@ -29,7 +29,7 @@ data class PostDto(
         val author: User,
         val addedAt: String)
 
-fun Post.toDto(userRepository: UserRepository, markdownConverter: MarkdownConverter) = userRepository.findById(author).map {
+fun Post.toDto(userRepository: UserRepository, markdownConverter: MarkdownConverter) = userRepository.findByUsername(author).map {
     PostDto(
             slug,
             title,

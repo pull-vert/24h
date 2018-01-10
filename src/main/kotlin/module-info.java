@@ -13,6 +13,7 @@ module one.at.a.time {
     requires spring.security.config;
     requires spring.data.commons;
     requires java.validation;
+    requires spring.security.web;
 
     exports one.at.a.time;
 }
