@@ -43,7 +43,8 @@ class SecurityConfiguration {
     fun securitygWebFilterChain(
             http: ServerHttpSecurity): SecurityWebFilterChain {
         return http.authorizeExchange()
-//                .pathMatchers("/admin").hasAuthority("ROLE_ADMIN") todo example, uncomment if endpoints need ADMIN role
+//                .pathMatchers("/admin").hasRole("ADMIN") todo example, uncomment if endpoints needs ADMIN role
+//                .pathMatchers("/auth/**").permitAll() todo, uncomment for endpoints that do not require authenticated user
                 .anyExchange().authenticated()
                 .and().httpBasic().and()
                 .build()
