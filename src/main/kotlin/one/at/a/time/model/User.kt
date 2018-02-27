@@ -16,6 +16,7 @@
 package one.at.a.time.model
 
 import org.springframework.data.mongodb.core.mapping.Document
+import org.springframework.security.core.AuthenticatedPrincipal
 import org.springframework.security.core.userdetails.UserDetails
 import javax.validation.constraints.Email
 
@@ -26,10 +27,10 @@ data class User(
         @Email var email: String,
         var firstname: String? = null,
         var lastname: String? = null,
-        var roles: Set<Role> = setOf(Role.USER), // Default : USER
+        var roles: MutableSet<Role> = mutableSetOf(Role.USER), // Default : USER
         var description: String? = null,
         var active: Boolean = true
-) : Auditable(), UserDetails {
+) : Auditable(), UserDetails, AuthenticatedPrincipal {
     // UserDetails functions
     override fun getAuthorities() = roles
     override fun getUsername() = username
