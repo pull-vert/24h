@@ -43,9 +43,9 @@ class DatabaseInitializer(
         ops.dropCollection(PostEvent::class.java)
         ops.createCollection(PostEvent::class.java, CollectionOptions.empty().capped().size(10000))
 
-        val min = User("min", "password", "min")
-        val seb = User("sdeleuze", passwordEncoder.encode("password"), "sdeleuze@pivotal.com", "Sebastien", "Deleuze", mutableSetOf(USER, ADMIN), "Spring Framework committer @Pivotal, @Kotlin addict, #WebAssembly believer, @mixitconf organizer, #techactivism")
-        val simon = User("simonbasle", passwordEncoder.encode("password"), "simonbasle@pivotal.com", "Simon", "Basle", description = "software development aficionado, Reactor Software Engineer @pivotal")
+        val min = User("min",  passwordEncoder.encode("password"))
+        val seb = User("sdeleuze", passwordEncoder.encode("password"), mutableListOf(USER, ADMIN))
+        val simon = User("simonbasle", passwordEncoder.encode("password"))
 
         userRepository.deleteAll()
                 .block()
@@ -53,7 +53,7 @@ class DatabaseInitializer(
         listOf(min, seb, simon)
                 .toFlux()
                 .flatMap {
-                    println("saving ${it.name}")
+                    println("saving ${it.username}")
                     userRepository.save(it)
                 }.blockLast()
 

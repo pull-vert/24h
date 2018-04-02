@@ -49,8 +49,6 @@ class UserJsonApiTests(@LocalServerPort port: Int) {
                 .test()
                 .consumeNextWith {
                     assertThat(it.username).isEqualTo("sdeleuze")
-                    assertThat(it.firstname).isEqualTo("Sebastien")
-                    assertThat(it.lastname).isEqualTo("Deleuze")
                 }.verifyComplete()
     }
 

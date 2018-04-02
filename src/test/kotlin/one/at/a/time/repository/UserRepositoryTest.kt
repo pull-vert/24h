@@ -35,8 +35,7 @@ class UserRepositoryTest(@Autowired val userRepository: UserRepository) {
         userRepository.findByUsername("min")
                 .test()
                 .consumeNextWith {
-                    assertThat(it.lastname).isNull()
-                    assertThat(it.name).isEqualTo("min")
+                    assertThat(it.username).isEqualTo("min")
                     assertThat(it.roles).hasSize(1).containsExactly(USER)
                     assertThat(it.createdDate).isNotNull()
                     assertThat(it.lastModifiedDate).isNotNull()
@@ -48,9 +47,7 @@ class UserRepositoryTest(@Autowired val userRepository: UserRepository) {
         userRepository.findByUsername("sdeleuze")
                 .test()
                 .consumeNextWith {
-                    assertThat(it.lastname).isEqualTo("Deleuze")
-                    assertThat(it.name).isEqualTo("sdeleuze : Sebastien Deleuze")
-                    assertThat(it.roles).hasSize(2).containsExactly(USER, ADMIN)
+                    assertThat(it.username).isEqualTo("sdeleuze")
                     assertThat(it.createdDate).isNotNull()
                     assertThat(it.lastModifiedDate).isNotNull()
                 }.verifyComplete()
@@ -64,13 +61,13 @@ class UserRepositoryTest(@Autowired val userRepository: UserRepository) {
                 .flatMap {
                     createdDate = it.createdDate
                     lastModifiedDate = it.lastModifiedDate
-                    it.email = "sebdeleuze@pivotal.com"
+                    it.roles.remove(USER)
                     userRepository.save(it)
                 }
                 .test()
                 .consumeNextWith {
                     println("id = ${it.id}")
-                    assertThat(it.email).isEqualTo("sebdeleuze@pivotal.com")
+                    assertThat(it.roles).hasSize(1).containsExactly(ADMIN)
                     assertThat(it.createdDate).isEqualTo(createdDate)
                     assertThat(it.lastModifiedDate).isNotEqualTo(lastModifiedDate)
                 }.verifyComplete()

@@ -22,24 +22,8 @@ import javax.validation.constraints.Email
 
 @Document
 data class User(
-        internal var username: String, // internal to avoid conflict with getPassword java method from UserDetails
-        internal var password: String, // internal to avoid conflict with getPassword java method from UserDetails
-        @Email var email: String,
-        var firstname: String? = null,
-        var lastname: String? = null,
-        var roles: MutableSet<Role> = mutableSetOf(Role.USER), // Default : USER
-        var description: String? = null,
+        var username: String, // internal to avoid conflict with getPassword java method from UserDetails
+        var password: String, // internal to avoid conflict with getPassword java method from UserDetails
+        var roles: MutableList<Role> = mutableListOf(Role.USER), // Default : USER
         var active: Boolean = true
-) : Auditable(), UserDetails, AuthenticatedPrincipal {
-    // UserDetails functions
-    override fun getAuthorities() = roles
-    override fun getUsername() = username
-    override fun getPassword() = password
-    override fun isEnabled() = active
-    override fun isCredentialsNonExpired() = active
-    override fun isAccountNonExpired() = active
-    override fun isAccountNonLocked() = active
-
-    // AuthenticatedPrincipal function
-    override fun getName() = "$username${if (null != firstname) " : $firstname $lastname" else ""}"
-}
+) : Auditable()
