@@ -15,8 +15,8 @@
  */
 package one.at.a.time.repository
 
-import one.at.a.time.model.Role.USER
 import one.at.a.time.model.Role.ADMIN
+import one.at.a.time.model.Role.USER
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -24,7 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import reactor.test.test
-import java.time.Duration
+import java.time.LocalDateTime
 
 @ExtendWith(SpringExtension::class)
 @SpringBootTest
@@ -58,21 +58,21 @@ class UserRepositoryTest(@Autowired val userRepository: UserRepository) {
 
     @Test
     fun `Assert save modify lastModifiedDate but not createdDate`() {
+        var createdDate: LocalDateTime? = null
+        var lastModifiedDate: LocalDateTime? = null
         userRepository.findByUsername("sdeleuze")
-                .test()
-                .consumeNextWith {
-                    val createdDate = it.createdDate
-                    val lastModifiedDate = it.lastModifiedDate
+                .flatMap {
+                    createdDate = it.createdDate
+                    lastModifiedDate = it.lastModifiedDate
                     it.email = "sebdeleuze@pivotal.com"
                     userRepository.save(it)
-                            .delayElement(Duration.ofMillis(2))
-                            .test()
-                            .consumeNextWith {
-                                println("id = ${it.id}")
-                                assertThat(it.email).isEqualTo("sebdeleuze@pivotal.com")
-                                assertThat(it.createdDate).isEqualTo(createdDate)
-                                assertThat(it.lastModifiedDate).isNotEqualTo(lastModifiedDate)
-                            }.verifyComplete()
+                }
+                .test()
+                .consumeNextWith {
+                    println("id = ${it.id}")
+                    assertThat(it.email).isEqualTo("sebdeleuze@pivotal.com")
+                    assertThat(it.createdDate).isEqualTo(createdDate)
+                    assertThat(it.lastModifiedDate).isNotEqualTo(lastModifiedDate)
                 }.verifyComplete()
     }
 }

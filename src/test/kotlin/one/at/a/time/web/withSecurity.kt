@@ -20,9 +20,11 @@ import java.util.*
 
 private fun buildAutorizationHeader(): String {
     val auth = "sdeleuze:password"
-    val encodedAuth = Base64.getEncoder().encode(
-            auth.toByteArray(Charsets.UTF_8))
-    return "Basic " + String(encodedAuth)
+    val encodedAuth = Base64.getEncoder()
+            .encode(auth.toByteArray(Charsets.UTF_8))
+            .toString()
+    println("generating base64 basic $encodedAuth")
+    return "Basic $encodedAuth"
 }
 
 fun WebClient.RequestHeadersSpec<*>.addAuthHeader() =

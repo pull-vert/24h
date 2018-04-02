@@ -27,6 +27,7 @@ import org.springframework.data.mongodb.core.CollectionOptions
 import org.springframework.data.mongodb.core.MongoOperations
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Component
+import reactor.core.publisher.toFlux
 import java.time.LocalDateTime
 
 
@@ -38,15 +39,23 @@ class DatabaseInitializer(
         private val passwordEncoder: PasswordEncoder) : CommandLineRunner {
 
     override fun run(vararg args: String) {
+        println("DatabaseInitializer start")
         ops.dropCollection(PostEvent::class.java)
         ops.createCollection(PostEvent::class.java, CollectionOptions.empty().capped().size(10000))
 
         val min = User("min", "password", "min")
-        val seb = User("sdeleuze", passwordEncoder.encode("password"), "sdeleuze@pivotal.com", "Sebastien", "Deleuze", setOf(USER, ADMIN), "Spring Framework committer @Pivotal, @Kotlin addict, #WebAssembly believer, @mixitconf organizer, #techactivism")
+        val seb = User("sdeleuze", passwordEncoder.encode("password"), "sdeleuze@pivotal.com", "Sebastien", "Deleuze", mutableSetOf(USER, ADMIN), "Spring Framework committer @Pivotal, @Kotlin addict, #WebAssembly believer, @mixitconf organizer, #techactivism")
         val simon = User("simonbasle", passwordEncoder.encode("password"), "simonbasle@pivotal.com", "Simon", "Basle", description = "software development aficionado, Reactor Software Engineer @pivotal")
+
         userRepository.deleteAll()
-                .thenMany(userRepository.saveAll(listOf(min, seb, simon)))
-                .blockLast()
+                .block()
+
+        listOf(min, seb, simon)
+                .toFlux()
+                .flatMap {
+                    println("saving ${it.name}")
+                    userRepository.save(it)
+                }.blockLast()
 
         val reactorTitle = "Reactor Bismuth is out"
         val reactorPost = Post(
@@ -90,7 +99,13 @@ class DatabaseInitializer(
                 LocalDateTime.of(2017, 1, 4, 9, 0)
         )
         postRepository.deleteAll()
-                .thenMany(postRepository.saveAll(listOf(reactorPost, spring5Post, springKotlinPost)))
-                .blockLast()
+                .block()
+
+        listOf(reactorPost, spring5Post, springKotlinPost)
+                .toFlux()
+                .flatMap {
+                    println("saving ${it.title}")
+                    postRepository.save(it)
+                }.blockLast()
     }
 }
