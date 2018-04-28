@@ -1,21 +1,17 @@
-# Spring Kotlin deepdive
+# One At A Time Backend
 
-This project is designed to show step by step how to migrate from Java to Kotlin with
-Spring Boot step by step:
- * [Step 0](https://github.com/sdeleuze/spring-kotlin-deepdive/): Initial Java project
- * [Step 1](https://github.com/sdeleuze/spring-kotlin-deepdive/tree/step1): Java to Kotlin
- * [Step 2](https://github.com/sdeleuze/spring-kotlin-deepdive/tree/step2): Spring Boot 2
- * [Step 3](https://github.com/sdeleuze/spring-kotlin-deepdive/tree/step3): Spring WebFlux
- * [Step 4](https://github.com/sdeleuze/spring-kotlin-deepdive/tree/step4): Kotlin routing DSL
- 
-See [Spring Kotlin support documentation](https://docs.spring.io/spring/docs/current/spring-framework-reference/languages.html#kotlin) for more details.
- 
-## Step 4: Kotlin routing DSL
+## Inspirations
 
-* Kotlin routing DSL is based on WebFlux Java functional API
-* Only available for WebFlux, not MVC
-* Router DSL
-* Handlers
+[Spring reactive application with Spring security](https://www.codementor.io/hantsy/build-a-reactive-application-with-angular-5-and-spring-boot-2-0-fv8uif7wg)
+
+[Spring Kotlin support documentation](https://docs.spring.io/spring/docs/current/spring-framework-reference/languages.html#kotlin)
+ 
+## Architecture
+
+* Kotlin routing DSL for REST API (based on WebFlux Java functional API)
+* Reactive MongoDB driver
+* End to end use of Reactor (Mono & Flux)
+* Spring Security (reactive) & Spring session in MongoDB
 
 ## Build with gradle
 
@@ -60,10 +56,4 @@ docker run -d -p 27017:27017 --name mongo mongo
 2) start spring boot app, with link to mongo
 
 docker run -p 8080:8080 --name 24h-back --link=mongo 24h-back
-
-**The end!**
-
-If you want to go even further with Kotlin, it can be used for Gradle build via its Kotlin
-DSL and for frontend / multiplatform code, see [spring-kotlin-fullstack](https://github.com/sdeleuze/spring-kotlin-fullstack)
-example project.
 

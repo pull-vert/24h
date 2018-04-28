@@ -58,6 +58,16 @@ class PostJsonApiTests(@LocalServerPort port: Int) {
     }
 
     @Test
+    fun `Verify findOne JSON API response has a X-AUTH-TOKEN`() {
+        client.get().uri("/api/post/reactor-bismuth-is-out").addAuthHeader()
+                .exchange()
+                .test()
+                .consumeNextWith {
+                    assertThat(it.headers().header("X-AUTH-TOKEN")).isNotEmpty
+                }.verifyComplete()
+    }
+
+    @Test
     fun `Verify findOne JSON API with Markdown converter`() {
         client.get().uri("/api/post/reactor-bismuth-is-out?converter=markdown").addAuthHeader().retrieve().bodyToMono<Post>()
                 .test()
