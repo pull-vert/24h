@@ -1,7 +1,7 @@
 buildscript {
     ext {
-        kotlinVersion = "1.2.51"
-        springBootVersion = "2.0.3.RELEASE"
+        kotlinVersion="1.2.61"
+        springBootVersion="2.0.5.RELEASE"
     }
     repositories {
         mavenCentral()
@@ -50,8 +50,8 @@ dependencies {
     compile('org.springframework.boot:spring-boot-starter-actuator')
     compile('org.springframework.boot:spring-boot-starter-security')
     compile('org.springframework.session:spring-session-data-mongodb')
-    compile('com.atlassian.commonmark:commonmark:0.10.0')
-    compile('com.atlassian.commonmark:commonmark-ext-autolink:0.10.0')
+    compile('com.atlassian.commonmark:commonmark:0.11.0')
+    compile('com.atlassian.commonmark:commonmark-ext-autolink:0.11.0')
     compile('de.flapdoodle.embed:de.flapdoodle.embed.mongo')
 
     runtime('org.springframework.boot:spring-boot-devtools')

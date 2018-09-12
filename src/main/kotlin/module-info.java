@@ -6,8 +6,8 @@ module one.at.a.time {
     requires spring.context;
     requires spring.security.core;
     requires reactor.core;
-    requires commonmark;
-    requires commonmark.ext.autolink;
+    requires org.commonmark;
+    requires org.commonmark.ext.autolink;
     requires spring.webflux;
     requires spring.web;
     requires spring.security.config;
