@@ -13,13 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package one.at.a.time.model
+package com.oaat.entities
 
-import org.springframework.security.core.GrantedAuthority
+import org.springframework.data.annotation.Id
+import java.util.*
 
-enum class Role : GrantedAuthority {
-    USER,
-    ADMIN;
+data class Post(
+    val title: String,
+    val headline: String,
+    val content: String,
+    val author: String,
+    private val id: UUID = UUID.randomUUID()
+) : Entity() {
 
-    override fun getAuthority() = this.name
+    // Persistable function
+    @Id
+    override fun getId() = id
 }

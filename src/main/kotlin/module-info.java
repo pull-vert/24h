@@ -14,7 +14,6 @@ module one.at.a.time {
     requires spring.data.commons;
     requires java.validation;
     requires spring.security.web;
-    requires spring.session.data.mongodb;
 
-    exports one.at.a.time;
+//    exports one.at.a.time;
 }

@@ -13,20 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package one.at.a.time.model
+package com.oaat.entities
 
-import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.Id
-import org.springframework.data.annotation.LastModifiedDate
-import org.springframework.data.domain.Persistable
-import java.time.LocalDateTime
+import org.springframework.data.mongodb.core.mapping.Document
 import java.util.*
 
-abstract class Auditable(
-        @Id private val id: Any = UUID.randomUUID(),
-        @CreatedDate var createdDate: LocalDateTime? = null,
-        @LastModifiedDate var lastModifiedDate: LocalDateTime? = null): Persistable<Any> {
-    // Persistable functions
-    override fun isNew() = (null == createdDate)
+@Document
+data class PostEvent(
+        val title: String,
+        private val id: UUID = UUID.randomUUID()
+) : Entity() {
+
+    // Persistable function
+    @Id
     override fun getId() = id
 }

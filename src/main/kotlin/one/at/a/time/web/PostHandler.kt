@@ -16,9 +16,9 @@
 package one.at.a.time.web
 
 import one.at.a.time.MarkdownConverter
-import one.at.a.time.model.Post
-import one.at.a.time.repository.PostEventRepository
-import one.at.a.time.repository.PostRepository
+import com.oaat.entities.Post
+import com.oaat.repositories.PostEventRepository
+import com.oaat.repositories.PostRepository
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.server.ServerRequest
 import org.springframework.web.reactive.function.server.ServerResponse.ok

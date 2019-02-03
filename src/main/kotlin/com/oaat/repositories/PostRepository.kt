@@ -13,12 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package one.at.a.time.model
+package com.oaat.repositories
 
-import org.springframework.data.annotation.Id
-import org.springframework.data.mongodb.core.mapping.Document
+import com.oaat.entities.Post
+import org.springframework.stereotype.Repository
 
-@Document
-data class PostEvent(
-        @Id val slug: String,
-        val title: String)
+@Repository
+interface PostRepository : IRepository<Post>

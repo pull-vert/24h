@@ -13,18 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package one.at.a.time.repository
+package com.oaat.repositories
 
-import one.at.a.time.model.PostEvent
+import com.oaat.entities.PostEvent
 import org.springframework.data.mongodb.repository.Tailable
-import org.springframework.data.repository.reactive.ReactiveCrudRepository
 import org.springframework.stereotype.Repository
 import reactor.core.publisher.Flux
 
 @Repository
-interface PostEventRepository : ReactiveCrudRepository<PostEvent, String> {
+interface PostEventRepository : IRepository<PostEvent> {
 
     @Tailable
     fun findWithTailableCursorBy(): Flux<PostEvent>
-
 }

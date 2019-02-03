@@ -15,7 +15,7 @@
  */
 package one.at.a.time.web
 
-import one.at.a.time.model.Post
+import com.oaat.entities.Post
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith

@@ -17,7 +17,7 @@ package one.at.a.time.web
 
 import one.at.a.time.MarkdownConverter
 import one.at.a.time.formatDate
-import one.at.a.time.model.Post
+import com.oaat.entities.Post
 import one.at.a.time.model.User
 import one.at.a.time.repository.UserRepository
 

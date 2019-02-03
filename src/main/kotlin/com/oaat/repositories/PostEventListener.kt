@@ -1,3 +1,5 @@
+package com.oaat.repositories
+
 ///*
 // * Copyright 2002-2017 the original author or authors.
 // *
@@ -13,10 +15,10 @@
 // * See the License for the specific language governing permissions and
 // * limitations under the License.
 // */
-//package one.at.a.time.repository
+//package com.oaat.repositories
 //
-//import one.at.a.time.model.Post
-//import one.at.a.time.model.PostEvent
+//import com.oaat.entities.Post
+//import com.oaat.entities.PostEvent
 //import org.springframework.data.mongodb.core.mapping.event.AbstractMongoEventListener
 //import org.springframework.data.mongodb.core.mapping.event.AfterSaveEvent
 //import org.springframework.stereotype.Component

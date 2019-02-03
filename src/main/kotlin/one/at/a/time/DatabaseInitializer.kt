@@ -15,12 +15,12 @@
  */
 package one.at.a.time
 
-import one.at.a.time.model.Post
-import one.at.a.time.model.PostEvent
+import com.oaat.entities.Post
+import com.oaat.entities.PostEvent
 import one.at.a.time.model.Role.ADMIN
 import one.at.a.time.model.Role.USER
 import one.at.a.time.model.User
-import one.at.a.time.repository.PostRepository
+import com.oaat.repositories.PostRepository
 import one.at.a.time.repository.UserRepository
 import org.springframework.boot.CommandLineRunner
 import org.springframework.data.mongodb.core.CollectionOptions
