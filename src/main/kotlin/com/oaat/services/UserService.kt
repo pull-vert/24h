@@ -2,8 +2,13 @@ package com.oaat.services
 
 import com.oaat.entities.User
 import com.oaat.repositories.UserRepository
+import com.oaat.security.JWTUtil
+import com.oaat.web.UnauthorizedStatusException
+import com.oaat.web.dtos.AuthRequestDto
+import com.oaat.web.dtos.AuthResponseDto
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
+import reactor.core.publisher.switchIfEmpty
 import reactor.core.publisher.toMono
 
 @Service
@@ -27,4 +32,6 @@ class UserService(
                             throw UnauthorizedStatusException()
                         }
                     }.switchIfEmpty { throw UnauthorizedStatusException() }
+
+    fun findByUsername(username: String) = repository.findByUsername(username)
 }

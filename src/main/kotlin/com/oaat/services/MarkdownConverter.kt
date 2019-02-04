@@ -13,14 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package one.at.a.time
+package com.oaat.services
 
-import org.springframework.boot.autoconfigure.SpringBootApplication
-import org.springframework.boot.runApplication
+import org.commonmark.ext.autolink.AutolinkExtension
+import org.commonmark.parser.Parser
+import org.commonmark.renderer.html.HtmlRenderer
+import org.springframework.stereotype.Service
 
-@SpringBootApplication
-class Application
+@Service
+class MarkdownConverter : (String?) -> String {
 
-fun main() {
-    runApplication<Application>()
+    private val parser = Parser.builder().extensions(listOf(AutolinkExtension.create())).build()
+    private val renderer = HtmlRenderer.builder().build()
+
+    override fun invoke(input: String?): String {
+        if (input == null || input == "") {
+            return ""
+        }
+        return renderer.render(parser.parse(input))
+    }
 }

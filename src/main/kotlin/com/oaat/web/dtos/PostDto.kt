@@ -13,10 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package one.at.a.time.web
+package com.oaat.web.dtos
 
-import one.at.a.time.MarkdownConverter
-import one.at.a.time.formatDate
+import com.oaat.services.MarkdownConverter
 import com.oaat.entities.Post
 import one.at.a.time.model.User
 import one.at.a.time.repository.UserRepository

@@ -13,8 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package one.at.a.time.web
+package com.oaat.web
 
+import com.oaat.web.handlers.PostHandler
+import com.oaat.web.handlers.UserHandler
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.MediaType.*
@@ -22,8 +24,8 @@ import org.springframework.web.reactive.function.server.router
 
 
 @Configuration
-class Router(private val userHandler: UserHandler,
-             private val postHandler: PostHandler) {
+class ApiRoutes(private val userHandler: UserHandler,
+                private val postHandler: PostHandler) {
 
     @Bean
     fun appRouter() = router {
@@ -31,13 +33,13 @@ class Router(private val userHandler: UserHandler,
             "/api/user".nest {
                 GET("/principal/", userHandler::principal)
                 GET("/", userHandler::findAll)
-                GET("/{username}", userHandler::findByUsername)
+                GET("/username/{username}", userHandler::findByUsername)
             }
             "/api/post".nest {
                 GET("/", postHandler::findAll)
-                GET("/{slug}", postHandler::findOne)
-                POST("/", postHandler::save)
-                DELETE("/{slug}", postHandler::delete)
+                GET("/{id}", postHandler::findOneById)
+                POST("/", { req -> postHandler.save(req) })
+                DELETE("/{id}", postHandler::delete)
             }
         }
         (GET("/api/post/notifications") and accept(TEXT_EVENT_STREAM)).invoke(postHandler::notifications)

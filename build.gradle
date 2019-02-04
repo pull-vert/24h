@@ -1,6 +1,5 @@
 buildscript {
     ext {
-        netty_tcnative_version = '2.0.20.Final'
         jjwt_version = '0.9.1'
     }
     repositories {
@@ -48,7 +47,6 @@ dependencies {
     compile("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     compile("org.jetbrains.kotlin:kotlin-reflect")
     compile('de.flapdoodle.embed:de.flapdoodle.embed.mongo')
-    compile("io.netty:netty-tcnative-boringssl-static:$netty_tcnative_version") // this dependency is only required for Java 8, since java 9 ALPN is natively supported
     compile('org.springframework.boot:spring-boot-starter-security')
     compile("io.jsonwebtoken:jjwt:$jjwt_version")
     compile('org.springframework.boot:spring-boot-starter-actuator')
