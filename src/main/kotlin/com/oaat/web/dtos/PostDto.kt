@@ -15,26 +15,18 @@
  */
 package com.oaat.web.dtos
 
-import com.oaat.services.MarkdownConverter
-import com.oaat.entities.Post
-import one.at.a.time.model.User
-import one.at.a.time.repository.UserRepository
+import java.time.LocalDateTime
 
-data class PostDto(
-        val slug: String,
+data class PostGetDto(
+//        val slug: String,
         val title: String,
-        val headline: String,
+//        val headline: String,
         val content: String,
-        val author: User,
-        val addedAt: String)
+        val author: String,
+        val addedAt: LocalDateTime
+) : IDto
 
-fun Post.toDto(userRepository: UserRepository, markdownConverter: MarkdownConverter) = userRepository.findByUsername(author).map {
-    PostDto(
-            slug,
-            title,
-            markdownConverter.invoke(headline),
-            markdownConverter.invoke(content),
-            it,
-            addedAt.formatDate()
-    )
-}
+data class PostSaveDto(
+        val title: String?,
+        val content: String?
+) : IDto

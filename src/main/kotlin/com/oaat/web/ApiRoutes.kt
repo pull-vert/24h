@@ -15,8 +15,10 @@
  */
 package com.oaat.web
 
+import com.oaat.web.handlers.AuthenticationHandler
 import com.oaat.web.handlers.PostHandler
 import com.oaat.web.handlers.UserHandler
+import com.oaat.web.handlers.save
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.MediaType.*
@@ -25,21 +27,30 @@ import org.springframework.web.reactive.function.server.router
 
 @Configuration
 class ApiRoutes(private val userHandler: UserHandler,
-                private val postHandler: PostHandler) {
+                private val postHandler: PostHandler,
+                private val authenticationHandler: AuthenticationHandler
+) {
 
     @Bean
     fun appRouter() = router {
         accept(APPLICATION_JSON).nest {
-            "/api/user".nest {
-                GET("/principal/", userHandler::principal)
-                GET("/", userHandler::findAll)
-                GET("/username/{username}", userHandler::findByUsername)
+            "/api".nest {
+                "/users".nest {
+                    GET("/", userHandler::findAll)
+                    GET("/{id}", userHandler::findById)
+                    GET("/username/{username}", userHandler::findByUsername)
+                    DELETE("/{id}", userHandler::deleteById)
+                    POST("/") { req -> userHandler.save(req) }
+                }
+                "/post".nest {
+                    GET("/", postHandler::findAll)
+                    GET("/{id}", postHandler::findById)
+                    POST("/", { req -> postHandler.save(req) })
+                    DELETE("/{id}", postHandler::deleteById)
+                }
             }
-            "/api/post".nest {
-                GET("/", postHandler::findAll)
-                GET("/{id}", postHandler::findOneById)
-                POST("/", { req -> postHandler.save(req) })
-                DELETE("/{id}", postHandler::delete)
+            "/auth".nest {
+                POST("/", authenticationHandler::auth)
             }
         }
         (GET("/api/post/notifications") and accept(TEXT_EVENT_STREAM)).invoke(postHandler::notifications)

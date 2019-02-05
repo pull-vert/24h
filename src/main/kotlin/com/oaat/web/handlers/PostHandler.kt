@@ -15,40 +15,49 @@
  */
 package com.oaat.web.handlers
 
+import com.oaat.entities.Post
 import com.oaat.repositories.PostEventRepository
 import com.oaat.services.MarkdownConverter
 import com.oaat.services.PostService
+import com.oaat.web.dtos.PostGetDto
+import com.oaat.web.dtos.PostSaveDto
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.server.ServerRequest
 import org.springframework.web.reactive.function.server.ServerResponse.ok
-import org.springframework.web.reactive.function.server.body
 import org.springframework.web.reactive.function.server.bodyToServerSentEvents
-import reactor.core.publisher.toMono
+import javax.validation.Validator
 
 @Component
-class PostHandler(private val postService: PostService,
+class PostHandler(override val service: PostService,
+                  override val validator: Validator,
                   private val postEventRepository: PostEventRepository,
                   private val markdownConverter: MarkdownConverter
-) {
+) : IHandler<Post, PostGetDto, PostSaveDto> {
+    override fun entityToGetDto(entity: Post) =
+            PostGetDto(entity.title, markdownConverter.invoke(entity.content), entity.author, entity.createdDate!!)
+
+    override fun saveDtoToEntity(saveDto: PostSaveDto): Post {
+        TODO("not implemented")
+    }
 
     val notifications = postEventRepository.count()
             .flatMapMany { initialPostCount ->
                 postEventRepository.findWithTailableCursorBy().skip(initialPostCount) // will only emit new PostEvents
             }.share()
 
-    fun findOneById(req: ServerRequest) =
-            ok().body(req.queryParam("converter")
-                    .map { converter ->
-                        if (converter == "markdown") {
-                            postService.findById(req.pathVariable("id")).map { post ->
-                                post.copy(
-                                        headline = markdownConverter.invoke(post.headline),
-                                        content = markdownConverter.invoke(post.content))
-                            }
-                        } else {
-                            IllegalArgumentException("Only markdown converter is supported").toMono()
-                        }
-                    }.orElse(postService.findById(req.pathVariable("id"))))
+//    override fun findById(req: ServerRequest) =
+//            ok().body(req.queryParam("converter")
+//                    .map { converter ->
+//                        if (converter == "markdown") {
+//                            service.findById(req.pathVariable("id")).map { post ->
+//                                post.copy(
+//                                        headline = markdownConverter.invoke(post.headline),
+//                                        content = markdownConverter.invoke(post.content))
+//                            }
+//                        } else {
+//                            IllegalArgumentException("Only markdown converter is supported").toMono()
+//                        }
+//                    }.orElse(service.findById(req.pathVariable("id"))))
 
     fun notifications(req: ServerRequest) =
             ok().bodyToServerSentEvents(notifications)

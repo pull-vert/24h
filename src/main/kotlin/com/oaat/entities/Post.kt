@@ -20,7 +20,7 @@ import java.util.*
 
 data class Post(
     val title: String,
-    val headline: String,
+//    val headline: String,
     val content: String,
     val author: String,
     private val id: UUID = UUID.randomUUID()
