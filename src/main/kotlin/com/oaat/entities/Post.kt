@@ -16,14 +16,16 @@
 package com.oaat.entities
 
 import org.springframework.data.annotation.Id
+import org.springframework.data.mongodb.core.mapping.Document
 import java.util.*
 
+@Document
 data class Post(
     val title: String,
 //    val headline: String,
     val content: String,
     val author: String,
-    private val id: UUID = UUID.randomUUID()
+    private val id: String = UUID.randomUUID().toString()
 ) : Entity() {
 
     // Persistable function

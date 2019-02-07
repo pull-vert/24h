@@ -47,9 +47,11 @@ repositories {
 dependencies {
     compile('org.springframework.boot:spring-boot-starter-data-mongodb-reactive') {
         exclude group: 'org.mongodb', module: 'mongodb-driver'
-        exclude group: 'org.mongodb', module: 'mongodb-driver-async'
+        exclude group: 'org.mongodb', module: 'mongodb-driver-core'
+        exclude group: 'org.mongodb', module: 'bson'
     }
-    compile('org.mongodb:mongodb-driver-sync:3.8.2')
+    // uber jar that works with java 9 module, checks dependencies and remove this hack and exclusions when updating spring-boot will be ok
+    compile('org.mongodb:mongo-java-driver:3.8.2')
     compile('org.springframework.boot:spring-boot-starter-webflux')
     compile('com.fasterxml.jackson.module:jackson-module-kotlin')
     compile("org.jetbrains.kotlin:kotlin-stdlib-jdk8")

@@ -34,7 +34,12 @@ class PostHandler(override val service: PostService,
                   private val markdownConverter: MarkdownConverter
 ) : IHandler<Post, PostGetDto, PostSaveDto> {
     override fun entityToGetDto(entity: Post) =
-            PostGetDto(entity.title, markdownConverter.invoke(entity.content), entity.author, entity.createdDate!!)
+            PostGetDto(
+                    entity.title,
+                    markdownConverter.invoke(entity.content),
+                    entity.author,
+                    entity.createdDate!!
+            )
 
     override fun saveDtoToEntity(saveDto: PostSaveDto): Post {
         TODO("not implemented")

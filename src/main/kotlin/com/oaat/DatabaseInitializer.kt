@@ -17,6 +17,8 @@ package com.oaat
 
 import com.oaat.entities.Post
 import com.oaat.entities.PostEvent
+import com.oaat.entities.Role.ROLE_ADMIN
+import com.oaat.entities.Role.ROLE_USER
 import com.oaat.entities.User
 import com.oaat.repositories.PostRepository
 import com.oaat.services.UserService
@@ -25,7 +27,6 @@ import org.springframework.data.mongodb.core.CollectionOptions
 import org.springframework.data.mongodb.core.MongoOperations
 import org.springframework.stereotype.Component
 import reactor.core.publisher.toFlux
-import java.util.*
 
 internal const val USER_FRED_UUID = "79e9eb45-2835-49c8-ad3b-c951b591bc7f"
 internal const val USER_BOSS_UUID = "67d4306e-d99d-4e54-8b1d-5b1e92691a4e"
@@ -48,8 +49,8 @@ class DatabaseInitializer(
 
         ops.createCollection(PostEvent::class.java, CollectionOptions.empty().capped().size(10000))
 
-        val fred = User("Fred", "password", id = UUID.fromString(USER_FRED_UUID), enabled = true)
-        val boss = User("Boss", "secured_password", id = UUID.fromString(USER_BOSS_UUID), enabled = true)
+        val fred = User("Fred", "password", id = USER_FRED_UUID, enabled = true)
+        val boss = User("Boss", "secured_password", mutableListOf(ROLE_ADMIN, ROLE_USER), id = USER_BOSS_UUID, enabled = true)
         listOf(fred, boss)
                 .toFlux()
                 .flatMap { user -> userService.save(user) }

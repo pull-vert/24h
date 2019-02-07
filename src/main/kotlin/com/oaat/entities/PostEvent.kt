@@ -22,7 +22,7 @@ import java.util.*
 @Document
 data class PostEvent(
         val title: String,
-        private val id: UUID = UUID.randomUUID()
+        private val id: String = UUID.randomUUID().toString()
 ) : Entity() {
 
     // Persistable function
