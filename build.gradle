@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.config.KotlinCompilerVersion
 buildscript {
     ext {
         jjwt_version = '0.9.1'
-        commonmark_version = '0.11.0'
+        commonmark_version = '0.12.1'
     }
     repositories {
         mavenCentral()
@@ -50,7 +50,8 @@ dependencies {
         exclude group: 'org.mongodb', module: 'mongodb-driver-core'
         exclude group: 'org.mongodb', module: 'bson'
     }
-    // uber jar that works with java 9 module, checks dependencies and remove this hack and exclusions when updating spring-boot will be ok
+    // uber jar that works with java 9 module, checks dependencies and remove this hack
+    // and exclusions above when updated spring-boot-starter-data-mongodb-reactive is ok
     compile('org.mongodb:mongo-java-driver:3.8.2')
     compile('org.springframework.boot:spring-boot-starter-webflux')
     compile('com.fasterxml.jackson.module:jackson-module-kotlin')
