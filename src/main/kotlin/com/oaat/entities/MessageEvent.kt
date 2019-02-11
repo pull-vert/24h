@@ -20,7 +20,7 @@ import org.springframework.data.mongodb.core.mapping.Document
 import java.util.*
 
 @Document
-data class PostEvent(
+data class MessageEvent(
         val title: String,
         private val id: String = UUID.randomUUID().toString()
 ) : Entity() {

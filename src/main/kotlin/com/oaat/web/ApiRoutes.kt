@@ -16,7 +16,7 @@
 package com.oaat.web
 
 import com.oaat.web.handlers.AuthenticationHandler
-import com.oaat.web.handlers.PostHandler
+import com.oaat.web.handlers.MessageHandler
 import com.oaat.web.handlers.UserHandler
 import com.oaat.web.handlers.save
 import org.springframework.context.annotation.Bean
@@ -27,7 +27,7 @@ import org.springframework.web.reactive.function.server.router
 
 @Configuration
 class ApiRoutes(private val userHandler: UserHandler,
-                private val postHandler: PostHandler,
+                private val messageHandler: MessageHandler,
                 private val authenticationHandler: AuthenticationHandler
 ) {
 
@@ -36,24 +36,23 @@ class ApiRoutes(private val userHandler: UserHandler,
         accept(APPLICATION_JSON).nest {
             "/api".nest {
                 "/users".nest {
-                    GET("/", userHandler::findAll)
                     GET("/{id}", userHandler::findById)
                     GET("/username/{username}", userHandler::findByUsername)
                     DELETE("/{id}", userHandler::deleteById)
                     POST("/") { req -> userHandler.save(req) }
                 }
-                "/post".nest {
-                    GET("/", postHandler::findAll)
-                    GET("/{id}", postHandler::findById)
-                    POST("/", { req -> postHandler.save(req) })
-                    DELETE("/{id}", postHandler::deleteById)
+                "/messages".nest {
+                    GET("/", messageHandler::findAll)
+                    GET("/{id}", messageHandler::findById)
+                    POST("/", messageHandler::save)
+                    DELETE("/{id}", messageHandler::deleteById)
                 }
             }
             "/auth".nest {
                 POST("/", authenticationHandler::auth)
             }
         }
-        (GET("/api/post/notifications") and accept(TEXT_EVENT_STREAM)).invoke(postHandler::notifications)
+        (GET("/api/post/notifications") and accept(TEXT_EVENT_STREAM)).invoke(messageHandler::notifications)
     }
 
 }

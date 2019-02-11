@@ -13,32 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package one.at.a.time.web
+package com.oaat.web
 
-import com.oaat.entities.Post
-import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
-import org.springframework.boot.test.context.SpringBootTest
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.oaat.security.JWTUtil
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.web.server.LocalServerPort
-import org.springframework.http.HttpStatus
-import org.springframework.test.context.junit.jupiter.SpringExtension
-import org.springframework.web.reactive.function.client.WebClient
-import org.springframework.web.reactive.function.client.bodyToFlux
-import org.springframework.web.reactive.function.client.bodyToMono
-import reactor.test.test
-import java.time.LocalDateTime
 
-@ExtendWith(SpringExtension::class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class PostJsonApiTests(@LocalServerPort port: Int) {
-
-    // TODO Migrate to WebTestClient when https://youtrack.jetbrains.com/issue/KT-5464 will be fixed
-    private val client = WebClient.create("http://localhost:$port")
+internal class MessageApiTest(
+        @LocalServerPort port: Int,
+        @Autowired jwtUtil: JWTUtil,
+        @Autowired objectMapper: ObjectMapper
+) : ApiTest(port, jwtUtil, objectMapper) {
 
 //    @Test
 //    fun `Assert findAll JSON API is parsed correctly and contains 3 elements`() {
-//        client.get().uri("/api/post/").addAuthHeader().retrieve().bodyToFlux<Post>()
+//        client.get().uri("/api/post/").addAuthHeader().retrieve().bodyToFlux<Message>()
 //                .test()
 //                .expectNextCount(3)
 //                .verifyComplete()
@@ -46,7 +36,7 @@ class PostJsonApiTests(@LocalServerPort port: Int) {
 //
 //    @Test
 //    fun `Verify findOne JSON API`() {
-//        client.get().uri("/api/post/reactor-bismuth-is-out").addAuthHeader().retrieve().bodyToMono<Post>()
+//        client.get().uri("/api/post/reactor-bismuth-is-out").addAuthHeader().retrieve().bodyToMono<Message>()
 //                .test()
 //                .consumeNextWith {
 //                    assertThat(it.title).isEqualTo("Reactor Bismuth is out")
@@ -69,7 +59,7 @@ class PostJsonApiTests(@LocalServerPort port: Int) {
 //
 //    @Test
 //    fun `Verify findOne JSON API with Markdown converter`() {
-//        client.get().uri("/api/post/reactor-bismuth-is-out?converter=markdown").addAuthHeader().retrieve().bodyToMono<Post>()
+//        client.get().uri("/api/post/reactor-bismuth-is-out?converter=markdown").addAuthHeader().retrieve().bodyToMono<Message>()
 //                .test()
 //                .consumeNextWith {
 //                    assertThat(it.title).startsWith("Reactor Bismuth is out")
@@ -90,10 +80,10 @@ class PostJsonApiTests(@LocalServerPort port: Int) {
 
 //    @Test
 //    fun `Verify post JSON API and notifications via SSE`() {
-//        client.get().uri("/api/post/notifications").accept(MediaType.TEXT_EVENT_STREAM).retrieve().bodyToFlux<PostEvent>()
+//        client.get().uri("/api/post/notifications").accept(MediaType.TEXT_EVENT_STREAM).retrieve().bodyToFlux<MessageEvent>()
 //                .take(1)
 //                .doOnSubscribe {
-//                    client.post().uri("/api/post/").syncBody(Post("foo", "Foo", "foo", "foo", "mark", LocalDateTime.now())).exchange().subscribe()
+//                    client.post().uri("/api/post/").syncBody(Message("foo", "Foo", "foo", "foo", "mark", LocalDateTime.now())).exchange().subscribe()
 //                }
 //                .test()
 //                .consumeNextWith {

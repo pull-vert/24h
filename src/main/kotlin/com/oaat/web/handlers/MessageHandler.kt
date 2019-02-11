@@ -15,39 +15,55 @@
  */
 package com.oaat.web.handlers
 
-import com.oaat.entities.Post
-import com.oaat.repositories.PostEventRepository
+import com.oaat.entities.Message
+import com.oaat.repositories.MessageEventRepository
 import com.oaat.services.MarkdownConverter
-import com.oaat.services.PostService
-import com.oaat.web.dtos.PostGetDto
-import com.oaat.web.dtos.PostSaveDto
+import com.oaat.services.MessageService
+import com.oaat.slugify
+import com.oaat.web.dtos.MessageGetDto
+import com.oaat.web.dtos.MessageSaveDto
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.server.ServerRequest
+import org.springframework.web.reactive.function.server.ServerResponse
 import org.springframework.web.reactive.function.server.ServerResponse.ok
+import org.springframework.web.reactive.function.server.bodyToMono
 import org.springframework.web.reactive.function.server.bodyToServerSentEvents
+import java.net.URI
 import javax.validation.Validator
 
 @Component
-class PostHandler(override val service: PostService,
-                  override val validator: Validator,
-                  private val postEventRepository: PostEventRepository,
-                  private val markdownConverter: MarkdownConverter
-) : IHandler<Post, PostGetDto, PostSaveDto> {
-    override fun entityToGetDto(entity: Post) =
-            PostGetDto(
+class MessageHandler(override val service: MessageService,
+                     override val validator: Validator,
+                     private val messageEventRepository: MessageEventRepository,
+                     private val markdownConverter: MarkdownConverter
+) : IHandler<Message, MessageGetDto, MessageSaveDto> {
+    override fun entityToGetDto(entity: Message) =
+            MessageGetDto(
                     entity.title,
+                    entity.slug,
                     markdownConverter.invoke(entity.content),
                     entity.author,
                     entity.createdDate!!
             )
 
-    override fun saveDtoToEntity(saveDto: PostSaveDto): Post {
-        TODO("not implemented")
-    }
+    private fun saveDtoToEntity(saveDto: MessageSaveDto, principalName: String) =
+            Message(
+                    saveDto.title!!,
+                    saveDto.title.slugify(),
+                    saveDto.content!!,
+                    principalName
+            )
 
-    val notifications = postEventRepository.count()
+    fun save(req: ServerRequest) =
+            req.bodyToMono<MessageSaveDto>()
+                    .doOnNext(::callValidator)
+                    .zipWith(req.principal()) { saveDto, principal -> saveDtoToEntity(saveDto, principal.name) }
+                    .flatMap { entity -> service.save(entity) }
+                    .flatMap { entity -> ServerResponse.created(URI.create("$findByIdUrl/${entity.id}")).build() }
+
+    val notifications = messageEventRepository.count()
             .flatMapMany { initialPostCount ->
-                postEventRepository.findWithTailableCursorBy().skip(initialPostCount) // will only emit new PostEvents
+                messageEventRepository.findWithTailableCursorBy().skip(initialPostCount) // will only emit new PostEvents
             }.share()
 
 //    override fun findById(req: ServerRequest) =

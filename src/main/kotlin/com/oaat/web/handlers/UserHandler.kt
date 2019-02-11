@@ -17,9 +17,18 @@ class UserHandler(
 ): IHandler<User, UserGetDto, UserSaveDto> {
 
     override fun entityToGetDto(entity: User) =
-            UserGetDto(entity.username, entity.authorities, entity.isEnabled, entity.id)
+            UserGetDto(
+                    entity.username,
+                    entity.authorities,
+                    entity.isEnabled,
+                    entity.id
+            )
 
-    override fun saveDtoToEntity(saveDto: UserSaveDto) = User(saveDto.username!!, saveDto.password!!)
+    override fun saveDtoToEntity(saveDto: UserSaveDto) =
+            User(
+                    saveDto.username!!,
+                    saveDto.password!!
+            )
 
     override val findByIdUrl: String = "/api/users"
 

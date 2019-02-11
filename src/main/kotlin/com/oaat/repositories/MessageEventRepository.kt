@@ -13,17 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package one.at.a.time.web
+package com.oaat.repositories
 
-import org.springframework.web.reactive.function.client.WebClient
-import java.util.*
+import com.oaat.entities.MessageEvent
+import org.springframework.data.mongodb.repository.Tailable
+import org.springframework.stereotype.Repository
+import reactor.core.publisher.Flux
 
-private fun buildAutorizationHeader(): String {
-    val auth = "sdeleuze:password"
-    val encodedAuth = String(Base64.getEncoder().encode(auth.toByteArray(Charsets.UTF_8)));
-    println("generating base64 basic $encodedAuth")
-    return "basic $encodedAuth"
+@Repository
+interface MessageEventRepository : IRepository<MessageEvent> {
+
+    @Tailable
+    fun findWithTailableCursorBy(): Flux<MessageEvent>
 }
-
-fun WebClient.RequestHeadersSpec<*>.addAuthHeader() =
-        this.header("Authorization", buildAutorizationHeader())

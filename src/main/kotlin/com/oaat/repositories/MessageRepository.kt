@@ -13,20 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.oaat.web.dtos
+package com.oaat.repositories
 
-import java.time.LocalDateTime
+import com.oaat.entities.Message
+import org.springframework.stereotype.Repository
 
-data class PostGetDto(
-//        val slug: String,
-        val title: String,
-//        val headline: String,
-        val content: String,
-        val author: String,
-        val addedAt: LocalDateTime
-) : IDto
-
-data class PostSaveDto(
-        val title: String?,
-        val content: String?
-) : IDto
+@Repository
+interface MessageRepository : IRepository<Message>

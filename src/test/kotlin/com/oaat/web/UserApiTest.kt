@@ -29,7 +29,7 @@ internal class UserApiTest(
         @Autowired objectMapper: ObjectMapper
 ) : ApiTest(port, jwtUtil, objectMapper) {
 
-    @Rollback
+//    @Rollback
     @Test
     fun `Verify delete User with authenticated ADMIN role works`() {
         client.delete().uri("/api/users/{userId}", USER_FRED_UUID)

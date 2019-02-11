@@ -20,8 +20,9 @@ import org.springframework.data.mongodb.core.mapping.Document
 import java.util.*
 
 @Document
-data class Post(
+data class Message(
     val title: String,
+    val slug: String,
 //    val headline: String,
     val content: String,
     val author: String,

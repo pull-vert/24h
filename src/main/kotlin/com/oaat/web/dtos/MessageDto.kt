@@ -13,16 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.oaat.repositories
+package com.oaat.web.dtos
 
-import com.oaat.entities.PostEvent
-import org.springframework.data.mongodb.repository.Tailable
-import org.springframework.stereotype.Repository
-import reactor.core.publisher.Flux
+import java.time.LocalDateTime
+import javax.validation.constraints.NotEmpty
+import javax.validation.constraints.Size
 
-@Repository
-interface PostEventRepository : IRepository<PostEvent> {
+data class MessageSaveDto(
+        @field:NotEmpty
+        val title: String?,
 
-    @Tailable
-    fun findWithTailableCursorBy(): Flux<PostEvent>
-}
+        @field:NotEmpty
+        @field:Size(max = 1024)
+        val content: String?
+) : IDto
+
+data class MessageGetDto(
+        val title: String,
+        val slug: String,
+//        val headline: String,
+        val content: String,
+        val author: String,
+        val addedAt: LocalDateTime
+) : IDto

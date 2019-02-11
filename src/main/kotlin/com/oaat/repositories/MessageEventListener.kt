@@ -13,10 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.oaat.repositories
 
-import com.oaat.entities.Post
-import org.springframework.stereotype.Repository
+import com.oaat.entities.Message
+import com.oaat.entities.MessageEvent
+import org.springframework.data.mongodb.core.mapping.event.AbstractMongoEventListener
+import org.springframework.data.mongodb.core.mapping.event.AfterSaveEvent
+import org.springframework.stereotype.Component
 
-@Repository
-interface PostRepository : IRepository<Post>
+//@Component
+//class MessageEventListener(private val postEventRepository: MessageEventRepository) : AbstractMongoEventListener<Message>() {
+//
+//    override fun onAfterSave(event: AfterSaveEvent<Message>) {
+//        postEventRepository.save(MessageEvent(event.source.slug, event.source.title)).block()
+//    }
+//
+//}
