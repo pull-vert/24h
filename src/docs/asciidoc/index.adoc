@@ -1,0 +1,18 @@
+= One At A Time API doc
+
+This is the documentation for the API, with curl command, request and response format for each endpoint.
+
+== Message Operations
+
+todo
+
+== User Operations
+
+=== GET User by ID
+operation::findByIdUser[snippets='curl-request,http-request,http-response,path-parameters,response-fields']
+
+=== POST authentication
+operation::auth[snippets='curl-request,http-request,http-response,request-fields,response-fields']
+
+=== POST (save) User
+operation::saveUser[snippets='curl-request,http-request,http-response,request-fields,response-headers']
