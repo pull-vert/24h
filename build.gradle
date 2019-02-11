@@ -63,6 +63,8 @@ dependencies {
     compile('org.springframework.boot:spring-boot-starter-actuator')
     compile("com.atlassian.commonmark:commonmark:$commonmark_version")
     compile("com.atlassian.commonmark:commonmark-ext-autolink:$commonmark_version")
+    // removed from java 11, now requires explicit dependency. Required by jjwt
+    compile("javax.xml.bind:jaxb-api:2.3.1")
 
     runtime('org.springframework.boot:spring-boot-devtools')
 
