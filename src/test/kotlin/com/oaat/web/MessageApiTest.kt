@@ -19,10 +19,12 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.oaat.REACTOR_IS_OUT_UUID
 import com.oaat.security.JWTUtil
 import com.oaat.web.dtos.MessageGetDto
+import com.oaat.web.dtos.MessageSaveDto
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.web.server.LocalServerPort
+import org.springframework.test.annotation.Rollback
 import org.springframework.test.web.reactive.server.expectBody
 import org.springframework.test.web.reactive.server.expectBodyList
 
@@ -55,6 +57,48 @@ internal class MessageApiTest(
                     assertThat(message.content).startsWith("<p>It is my great pleasure to announce")
                     assertThat(message.author).isEqualTo("simonbasle")
                     assertThat(message.id).isEqualTo(REACTOR_IS_OUT_UUID)
+                }
+    }
+
+    @Test
+    fun `Verify findById with no JWT Token fails`() {
+        client.get().uri("/api/messages/{id}", REACTOR_IS_OUT_UUID)
+                .exchange()
+                .expectStatus().isUnauthorized
+    }
+
+    @Test
+    fun `Verify findById with invalid uuid uri param fails`() {
+        val invalidUuid = "invalid_uuid"
+        client.get().uri("/api/messages/{id}", invalidUuid)
+                .addAuthHeader()
+                .exchange()
+                .expectStatus().isBadRequest
+    }
+
+    @Rollback
+    @Test
+    fun `Verify save Message ok`() {
+        client.post().uri("/api/messages/")
+                .syncBody(MessageSaveDto("my test message", "my test message content"))
+                .addAuthHeader()
+                .exchange()
+                .expectStatus().isCreated
+                .expectHeader().value("location") { uri ->
+                    assertThat(uri).startsWith("/api/messages/")
+                    // Then call the returned uri and verify the it returns saved User resource
+                    client.get().uri(uri)
+                            .addAuthHeader()
+                            .exchange()
+                            .expectStatus().isOk
+                            .expectBody<MessageGetDto>()
+                            .consumeWith { exchangeResult ->
+                                val message = exchangeResult.responseBody!!
+                                assertThat(message.title).isEqualTo("my test message")
+                                assertThat(message.content).startsWith("<p>my test message content")
+                                assertThat(message.author).isEqualTo("Fred")
+                                assertThat(message.id).isNotEmpty()
+                            }
                 }
     }
 
