@@ -34,5 +34,6 @@ data class MessageGetDto(
 //        val headline: String,
         val content: String,
         val author: String,
+        val id: String,
         val addedAt: LocalDateTime
 ) : IDto

@@ -18,7 +18,6 @@ import org.springframework.restdocs.payload.PayloadDocumentation.*
 import org.springframework.restdocs.request.RequestDocumentation.parameterWithName
 import org.springframework.restdocs.request.RequestDocumentation.pathParameters
 import org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation.document
-import org.springframework.test.annotation.Rollback
 import org.springframework.test.web.reactive.server.expectBody
 import org.springframework.web.reactive.function.BodyInserters
 import java.util.*
@@ -29,7 +28,6 @@ internal class UserApiTest(
         @Autowired objectMapper: ObjectMapper
 ) : ApiTest(port, jwtUtil, objectMapper) {
 
-//    @Rollback
     @Test
     fun `Verify delete User with authenticated ADMIN role works`() {
         client.delete().uri("/api/users/{userId}", USER_FRED_UUID)

@@ -16,9 +16,15 @@
 package com.oaat.web
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.oaat.REACTOR_IS_OUT_UUID
 import com.oaat.security.JWTUtil
+import com.oaat.web.dtos.MessageGetDto
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.web.server.LocalServerPort
+import org.springframework.test.web.reactive.server.expectBody
+import org.springframework.test.web.reactive.server.expectBodyList
 
 internal class MessageApiTest(
         @LocalServerPort port: Int,
@@ -26,57 +32,31 @@ internal class MessageApiTest(
         @Autowired objectMapper: ObjectMapper
 ) : ApiTest(port, jwtUtil, objectMapper) {
 
-//    @Test
-//    fun `Assert findAll JSON API is parsed correctly and contains 3 elements`() {
-//        client.get().uri("/api/post/").addAuthHeader().retrieve().bodyToFlux<Message>()
-//                .test()
-//                .expectNextCount(3)
-//                .verifyComplete()
-//    }
-//
-//    @Test
-//    fun `Verify findOne JSON API`() {
-//        client.get().uri("/api/post/reactor-bismuth-is-out").addAuthHeader().retrieve().bodyToMono<Message>()
-//                .test()
-//                .consumeNextWith {
-//                    assertThat(it.title).isEqualTo("Reactor Bismuth is out")
-//                    assertThat(it.headline).startsWith("It is my great pleasure to")
-//                    assertThat(it.content).startsWith("With the release of")
-//                    assertThat(it.addedAt).isEqualTo(LocalDateTime.of(2017, 9, 28, 12, 0))
-//                    assertThat(it.author).isEqualTo("simonbasle")
-//                }.verifyComplete()
-//    }
-//
-//    @Test
-//    fun `Verify findOne JSON API response has a X-AUTH-TOKEN`() {
-//        client.get().uri("/api/post/reactor-bismuth-is-out").addAuthHeader()
-//                .exchange()
-//                .test()
-//                .consumeNextWith {
-//                    assertThat(it.headers().header("X-AUTH-TOKEN")).isNotEmpty
-//                }.verifyComplete()
-//    }
-//
-//    @Test
-//    fun `Verify findOne JSON API with Markdown converter`() {
-//        client.get().uri("/api/post/reactor-bismuth-is-out?converter=markdown").addAuthHeader().retrieve().bodyToMono<Message>()
-//                .test()
-//                .consumeNextWith {
-//                    assertThat(it.title).startsWith("Reactor Bismuth is out")
-//                    assertThat(it.headline).doesNotContain("**3.1.0.RELEASE**").contains("<strong>3.1.0.RELEASE</strong>")
-//                    assertThat(it.content).doesNotContain("[Spring Framework 5.0](https://spring.io/blog/2017/09/28/spring-framework-5-0-goes-ga)").contains("<a href=\"https://spring.io/blog/2017/09/28/spring-framework-5-0-goes-ga\">")
-//                    assertThat(it.addedAt).isEqualTo(LocalDateTime.of(2017, 9, 28, 12, 0))
-//                    assertThat(it.author).isEqualTo("simonbasle")
-//                }.verifyComplete()
-//    }
-//
-//    @Test
-//    fun `Verify findOne JSON API with invalid converter`() {
-//        client.get().uri("/api/post/reactor-bismuth-is-out?converter=foo").addAuthHeader().exchange()
-//                .test()
-//                .consumeNextWith { assertThat(it.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR) }
-//                .verifyComplete()
-//    }
+    @Test
+    fun `Assert findAll contains 3 Messages`() {
+        client.get().uri("/api/messages/")
+                .addAuthHeader()
+                .exchange()
+                .expectStatus().isOk
+                .expectBodyList<MessageGetDto>()
+                .hasSize(3)
+    }
+
+    @Test
+    fun `Verify findById returns expected Message`() {
+        client.get().uri("/api/messages/{id}", REACTOR_IS_OUT_UUID)
+                .addAuthHeader()
+                .exchange()
+                .expectStatus().isOk
+                .expectBody<MessageGetDto>()
+                .consumeWith { exchangeResult ->
+                    val message = exchangeResult.responseBody!!
+                    assertThat(message.title).isEqualTo("Reactor Bismuth is out")
+                    assertThat(message.content).startsWith("<p>It is my great pleasure to announce")
+                    assertThat(message.author).isEqualTo("simonbasle")
+                    assertThat(message.id).isEqualTo(REACTOR_IS_OUT_UUID)
+                }
+    }
 
 //    @Test
 //    fun `Verify post JSON API and notifications via SSE`() {

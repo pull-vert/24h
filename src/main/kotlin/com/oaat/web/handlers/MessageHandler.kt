@@ -43,8 +43,11 @@ class MessageHandler(override val service: MessageService,
                     entity.slug,
                     markdownConverter.invoke(entity.content),
                     entity.author,
+                    entity.id,
                     entity.createdDate!!
             )
+
+    override val findByIdUrl = "/api/messages"
 
     private fun saveDtoToEntity(saveDto: MessageSaveDto, principalName: String) =
             Message(

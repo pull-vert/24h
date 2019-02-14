@@ -30,6 +30,7 @@ import reactor.core.publisher.toFlux
 
 internal const val USER_FRED_UUID = "79e9eb45-2835-49c8-ad3b-c951b591bc7f"
 internal const val USER_BOSS_UUID = "67d4306e-d99d-4e54-8b1d-5b1e92691a4e"
+internal const val REACTOR_IS_OUT_UUID = "66c52f38-c240-4776-96ec-ee6ada201c2e"
 
 @Component
 class DatabaseInitializer(
@@ -54,9 +55,8 @@ class DatabaseInitializer(
         listOf(fred, boss)
                 .toFlux()
                 .flatMap { user -> userService.save(user) }
-                .doOnNext { user ->
-                    println("saving user $user, entity informations; createdBy=${user.createdBy}, createdDate=${user.createdDate}")
-                }.blockLast()
+                .doOnNext { user -> println("saved User $user, entity informations; createdBy=${user.createdBy}, createdDate=${user.createdDate}") }
+                .blockLast()
 
 
         val reactorTitle = "Reactor Bismuth is out"
@@ -65,7 +65,8 @@ class DatabaseInitializer(
                 reactorTitle.slugify(),
                 """It is my great pleasure to announce the GA release of **Reactor Bismuth**, which notably encompasses
                     |`reactor-core` **3.1.0.RELEASE** and `reactor-netty` **0.7.0.RELEASE** \uD83C\uDF89""".trimMargin(),
-                "simonbasle"
+                "simonbasle",
+                id = REACTOR_IS_OUT_UUID
         )
 
         val springTitle = "Spring Framework 5.0 goes GA"
@@ -92,9 +93,8 @@ class DatabaseInitializer(
 
         listOf(reactorPost, spring5Post, springKotlinPost)
                 .toFlux()
-                .flatMap {
-                    println("saving ${it.title}")
-                    messageRepository.save(it)
-                }.blockLast()
+                .flatMap { message -> messageRepository.save(message) }
+                .doOnNext { message -> println("saved Message $message") }
+                .blockLast()
     }
 }

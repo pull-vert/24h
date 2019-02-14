@@ -30,7 +30,7 @@ class UserHandler(
                     saveDto.password!!
             )
 
-    override val findByIdUrl: String = "/api/users"
+    override val findByIdUrl = "/api/users"
 
     fun findByUsername(req: ServerRequest) =
             ServerResponse.ok().body(service.findByUsername(req.pathVariable("username")))
