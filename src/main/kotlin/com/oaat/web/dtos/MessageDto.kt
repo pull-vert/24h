@@ -21,10 +21,11 @@ import javax.validation.constraints.Size
 
 data class MessageSaveDto(
         @field:NotEmpty
+        @field:Size(min = 2, max = 128)
         val title: String?,
 
         @field:NotEmpty
-        @field:Size(max = 1024)
+        @field:Size(min = 2, max = 1024)
         val content: String?
 ) : IDto
 

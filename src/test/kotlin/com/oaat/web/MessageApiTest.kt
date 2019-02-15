@@ -17,6 +17,7 @@ package com.oaat.web
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.oaat.REACTOR_IS_OUT_UUID
+import com.oaat.repositories.MessageRepository
 import com.oaat.security.JWTUtil
 import com.oaat.web.dtos.MessageGetDto
 import com.oaat.web.dtos.MessageSaveDto
@@ -27,11 +28,13 @@ import org.springframework.boot.web.server.LocalServerPort
 import org.springframework.test.annotation.Rollback
 import org.springframework.test.web.reactive.server.expectBody
 import org.springframework.test.web.reactive.server.expectBodyList
+import reactor.test.test
 
 internal class MessageApiTest(
         @LocalServerPort port: Int,
         @Autowired jwtUtil: JWTUtil,
-        @Autowired objectMapper: ObjectMapper
+        @Autowired objectMapper: ObjectMapper,
+        @Autowired private val messageRepository: MessageRepository
 ) : ApiTest(port, jwtUtil, objectMapper) {
 
     @Test
@@ -98,7 +101,51 @@ internal class MessageApiTest(
                                 assertThat(message.content).startsWith("<p>my test message content")
                                 assertThat(message.author).isEqualTo("Fred")
                                 assertThat(message.id).isNotEmpty()
+                                // then delete the Message we just saved to ensure immutable MongoDB state
+                                messageRepository.deleteById(message.id)
+                                        .test()
+                                        .verifyComplete()
                             }
+
+                }
+    }
+
+    @Test
+    fun `Verify save Message with title too long bean validation fails`() {
+        client.post().uri("/api/messages/")
+                .syncBody(MessageSaveDto("too long title too long title too long title too long title too long title too long title too long title" +
+                        "too long title too long title too long title too long title too long title too long title too long title" +
+                        "too long title too long title too long title too long title too long title too long title too long title",
+                        "my test message content"))
+                .addAuthHeader()
+                .exchange()
+                .expectStatus().isBadRequest
+                .expectBody<ServerResponseError>()
+                .consumeWith { exchangeResult ->
+                    val error = exchangeResult.responseBody!!
+                    assertThat(error["message"] as String).contains("title(too long title too", "2", "128")
+                    assertThat(error["path"]).isEqualTo("/api/messages/")
+                    assertThat(error["timestamp"]).isNotNull
+                    assertThat(error["status"]).isEqualTo(400)
+                    assertThat(error["error"]).isEqualTo("Bad Request")
+                }
+    }
+
+    @Test
+    fun `Verify save Message with no title bean validation fails`() {
+        client.post().uri("/api/messages/")
+                .syncBody(MessageSaveDto(null, "my test message content"))
+                .addAuthHeader()
+                .exchange()
+                .expectStatus().isBadRequest
+                .expectBody<ServerResponseError>()
+                .consumeWith { exchangeResult ->
+                    val error = exchangeResult.responseBody!!
+                    assertThat(error["message"] as String).contains("title(null)")
+                    assertThat(error["path"]).isEqualTo("/api/messages/")
+                    assertThat(error["timestamp"]).isNotNull
+                    assertThat(error["status"]).isEqualTo(400)
+                    assertThat(error["error"]).isEqualTo("Bad Request")
                 }
     }
 
