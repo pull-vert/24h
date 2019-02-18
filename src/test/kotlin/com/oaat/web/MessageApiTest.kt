@@ -15,27 +15,29 @@
  */
 package com.oaat.web
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.oaat.REACTOR_IS_OUT_UUID
 import com.oaat.repositories.MessageRepository
-import com.oaat.security.JWTUtil
 import com.oaat.web.dtos.MessageGetDto
 import com.oaat.web.dtos.MessageSaveDto
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.web.server.LocalServerPort
-import org.springframework.test.annotation.Rollback
+import org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders
+import org.springframework.restdocs.headers.HeaderDocumentation.headerWithName
+import org.springframework.restdocs.payload.PayloadDocumentation.requestFields
+import org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath
+import org.springframework.restdocs.payload.PayloadDocumentation.responseFields
+import org.springframework.restdocs.request.RequestDocumentation.parameterWithName
+import org.springframework.restdocs.request.RequestDocumentation.pathParameters
+import org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation.document
 import org.springframework.test.web.reactive.server.expectBody
 import org.springframework.test.web.reactive.server.expectBodyList
 import reactor.test.test
 
 internal class MessageApiTest(
-        @LocalServerPort port: Int,
-        @Autowired jwtUtil: JWTUtil,
-        @Autowired objectMapper: ObjectMapper,
         @Autowired private val messageRepository: MessageRepository
-) : ApiTest(port, jwtUtil, objectMapper) {
+) : ApiTest() {
 
     @Test
     fun `Assert findAll contains 3 Messages`() {
@@ -79,7 +81,6 @@ internal class MessageApiTest(
                 .expectStatus().isBadRequest
     }
 
-    @Rollback
     @Test
     fun `Verify save Message ok`() {
         client.post().uri("/api/messages/")
@@ -164,4 +165,65 @@ internal class MessageApiTest(
 //                .verifyComplete()
 //    }
 
+    @Test
+    fun `Message findAll doc`() {
+        client.get().uri("/api/messages/")
+                .addAuthHeader()
+                .exchange()
+                .expectStatus().isOk
+                .expectBody()
+                .consumeWith(document("findAllMessages",
+                        responseFields(
+                                fieldWithPath("[]").description("An array of Messages"))
+                                .andWithPrefix("[].", *messageFields())))
+    }
+
+    @Test
+    fun `Message findById doc`() {
+        client.get().uri("/api/messages/{id}", REACTOR_IS_OUT_UUID)
+                .addAuthHeader()
+                .exchange()
+                .expectStatus().isOk
+                .expectBody()
+                .consumeWith(document("findByIdMessage",
+                        pathParameters(parameterWithName("id").description("ID of the Message to search for")),
+                        responseFields(*messageFields())))
+    }
+
+    @Test
+    fun `Message Save doc`() {
+        client.post().uri("/api/messages/")
+                .syncBody(MessageSaveDto("my test message", "my test message content"))
+                .addAuthHeader()
+                .exchange()
+                .expectStatus().isCreated
+                .expectBody()
+                .consumeWith(document("saveMessage",
+                        requestFields(
+                                fieldWithPath("title").description("Title of the Message"),
+                                fieldWithPath("content").description("Content of the Message in Markdown format")
+                        ),
+                        responseHeaders(
+                                headerWithName("Location").description("GET URI for accessing created Message by its ID")
+                        )))
+        // then delete the Message we just saved to ensure immutable MongoDB state
+        messageRepository.findBySlug("my-test-message")
+                .flatMap { message -> messageRepository.deleteById(message.id) }
+                .test()
+                .verifyComplete()
+    }
+
+    /**
+     * Message fields used in responses.
+     *
+     * @return
+     */
+    private fun messageFields() = arrayOf(
+            fieldWithPath("title").description("Title of the message"),
+            fieldWithPath("slug").description("Slug created from Title"),
+            fieldWithPath("content").description("Content of the Message in HTML format"),
+            fieldWithPath("author").description("Author of the Message, corresponds to authenticated user that POSTed the Message"),
+            fieldWithPath("id").description("ID of the Message document"),
+            fieldWithPath("addedAt").description("Date of Message creation")
+    )
 }

@@ -1,16 +1,12 @@
 package com.oaat.web
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.oaat.USER_BOSS_UUID
 import com.oaat.USER_FRED_UUID
 import com.oaat.entities.Role.ROLE_ADMIN
-import com.oaat.security.JWTUtil
 import com.oaat.web.dtos.UserGetDto
 import com.oaat.web.dtos.UserSaveDto
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.web.server.LocalServerPort
 import org.springframework.core.io.ClassPathResource
 import org.springframework.restdocs.headers.HeaderDocumentation.headerWithName
 import org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders
@@ -22,11 +18,7 @@ import org.springframework.test.web.reactive.server.expectBody
 import org.springframework.web.reactive.function.BodyInserters
 import java.util.*
 
-internal class UserApiTest(
-        @LocalServerPort port: Int,
-        @Autowired jwtUtil: JWTUtil,
-        @Autowired objectMapper: ObjectMapper
-) : ApiTest(port, jwtUtil, objectMapper) {
+internal class UserApiTest : ApiTest() {
 
     @Test
     fun `Verify delete User with authenticated ADMIN role works`() {

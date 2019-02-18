@@ -4,7 +4,17 @@ This is the documentation for the API, with curl command, request and response f
 
 == Message Operations
 
-todo
+=== GET all Messages
+operation::findAllMessages[snippets='curl-request,http-request,http-response,response-fields']
+
+//=== GET Cow by name
+//operation::findByNameCow[snippets='curl-request,http-request,http-response,path-parameters,response-fields']
+
+=== GET Message by ID
+operation::findByIdMessage[snippets='curl-request,http-request,http-response,path-parameters,response-fields']
+
+=== POST (save) Message
+operation::saveMessage[snippets='curl-request,http-request,http-response,request-fields,response-headers']
 
 == User Operations
 

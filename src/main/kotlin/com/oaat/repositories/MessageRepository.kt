@@ -17,6 +17,14 @@ package com.oaat.repositories
 
 import com.oaat.entities.Message
 import org.springframework.stereotype.Repository
+import reactor.core.publisher.Mono
 
 @Repository
-interface MessageRepository : IRepository<Message>
+interface MessageRepository : IRepository<Message> {
+    /**
+     * Find the [Message] by slug.
+     * @param slug the slug to look up
+     * @return the [Message]. Cannot be null
+     */
+    fun findBySlug(slug: String): Mono<Message>
+}
