@@ -173,7 +173,7 @@ internal class MessageApiTest(
                 .expectBody<ServerResponseError>()
                 .consumeWith { exchangeResult ->
                     val error = exchangeResult.responseBody!!
-                    assertThat(error["message"] as String).isEqualTo("No message found for $slug slug")
+                    assertThat(error["message"] as String).isEqualTo("No Message found for $slug slug")
                     assertThat(error["path"]).isEqualTo("/api/messages/slug/no-slug")
                     assertThat(error["timestamp"]).isNotNull
                     assertThat(error["status"]).isEqualTo(404)

@@ -50,7 +50,7 @@ class MessageServiceTest {
                 .consumeErrorWith { thrown ->
                     assertThat(thrown).isInstanceOf(NotFoundStatusException::class.java)
                             .hasMessageContaining("404 NOT_FOUND")
-                            .hasMessageContaining("No message found for $slug slug")
+                            .hasMessageContaining("No Message found for $slug slug")
                 }.verify()
     }
 }

@@ -13,6 +13,7 @@ class MessageService(override val repository: MessageRepository) : IService<Mess
      * @param slug the slug to look up
      * @return the [Message].
      */
-    fun findBySlug(slug: String) = repository.findBySlug(slug)
-            .switchIfEmpty { throw NotFoundStatusException("No message found for $slug slug") }
+    fun findBySlug(slug: String) =
+            repository.findBySlug(slug)
+                    .switchIfEmpty { throw NotFoundStatusException("No Message found for $slug slug") }
 }

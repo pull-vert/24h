@@ -10,8 +10,7 @@ import reactor.test.test
 
 @ExtendWith(SpringExtension::class)
 @SpringBootTest
-class MessageRepositoryTest(
-        @Autowired private val messageRepository: MessageRepository) {
+class MessageRepositoryTest(@Autowired private val messageRepository: MessageRepository) {
 
     @Test
     fun `Verify findBySlug returns existing reactor-bismuth-is-out Message`() {
