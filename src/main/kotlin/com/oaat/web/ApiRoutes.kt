@@ -24,7 +24,6 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.http.MediaType.*
 import org.springframework.web.reactive.function.server.router
 
-
 @Configuration
 class ApiRoutes(private val userHandler: UserHandler,
                 private val messageHandler: MessageHandler,
@@ -38,12 +37,13 @@ class ApiRoutes(private val userHandler: UserHandler,
                 "/users".nest {
                     GET("/{id}", userHandler::findById)
                     GET("/username/{username}", userHandler::findByUsername)
-                    DELETE("/{id}", userHandler::deleteById)
                     POST("/") { req -> userHandler.save(req) }
+                    DELETE("/{id}", userHandler::deleteById)
                 }
                 "/messages".nest {
                     GET("/", messageHandler::findAll)
                     GET("/{id}", messageHandler::findById)
+                    GET("/slug/{slug}", messageHandler::findBySlug)
                     POST("/", messageHandler::save)
                     DELETE("/{id}", messageHandler::deleteById)
                 }

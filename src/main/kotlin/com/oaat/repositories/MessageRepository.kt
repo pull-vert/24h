@@ -24,7 +24,7 @@ interface MessageRepository : IRepository<Message> {
     /**
      * Find the [Message] by slug.
      * @param slug the slug to look up
-     * @return the [Message]. Cannot be null
+     * @return the [Message].
      */
     fun findBySlug(slug: String): Mono<Message>
 }

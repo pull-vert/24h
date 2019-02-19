@@ -22,12 +22,9 @@ import com.oaat.web.dtos.MessageSaveDto
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.web.server.LocalServerPort
-import org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders
 import org.springframework.restdocs.headers.HeaderDocumentation.headerWithName
-import org.springframework.restdocs.payload.PayloadDocumentation.requestFields
-import org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath
-import org.springframework.restdocs.payload.PayloadDocumentation.responseFields
+import org.springframework.restdocs.headers.HeaderDocumentation.responseHeaders
+import org.springframework.restdocs.payload.PayloadDocumentation.*
 import org.springframework.restdocs.request.RequestDocumentation.parameterWithName
 import org.springframework.restdocs.request.RequestDocumentation.pathParameters
 import org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation.document
@@ -150,6 +147,40 @@ internal class MessageApiTest(
                 }
     }
 
+    @Test
+    fun `Verify findBySlug returns expected Message`() {
+        client.get().uri("/api/messages/slug/{slug}", "reactor-bismuth-is-out")
+                .addAuthHeader()
+                .exchange()
+                .expectStatus().isOk
+                .expectBody<MessageGetDto>()
+                .consumeWith { exchangeResult ->
+                    val message = exchangeResult.responseBody!!
+                    assertThat(message.title).isEqualTo("Reactor Bismuth is out")
+                    assertThat(message.content).startsWith("<p>It is my great pleasure to announce")
+                    assertThat(message.author).isEqualTo("simonbasle")
+                    assertThat(message.id).isEqualTo(REACTOR_IS_OUT_UUID)
+                }
+    }
+
+    @Test
+    fun `Verify findBySlug returns 404 Not Found if provided slug is not found`() {
+        val slug = "no-slug"
+        client.get().uri("/api/messages/slug/{slug}", slug)
+                .addAuthHeader()
+                .exchange()
+                .expectStatus().isNotFound
+                .expectBody<ServerResponseError>()
+                .consumeWith { exchangeResult ->
+                    val error = exchangeResult.responseBody!!
+                    assertThat(error["message"] as String).isEqualTo("No message found for $slug slug")
+                    assertThat(error["path"]).isEqualTo("/api/messages/slug/no-slug")
+                    assertThat(error["timestamp"]).isNotNull
+                    assertThat(error["status"]).isEqualTo(404)
+                    assertThat(error["error"]).isEqualTo("Not Found")
+                }
+    }
+
 //    @Test
 //    fun `Verify post JSON API and notifications via SSE`() {
 //        client.get().uri("/api/post/notifications").accept(MediaType.TEXT_EVENT_STREAM).retrieve().bodyToFlux<MessageEvent>()
@@ -211,6 +242,18 @@ internal class MessageApiTest(
                 .flatMap { message -> messageRepository.deleteById(message.id) }
                 .test()
                 .verifyComplete()
+    }
+
+    @Test
+    fun `Message findBySlug doc`() {
+        client.get().uri("/api/messages/slug/{slug}", "reactor-bismuth-is-out")
+                .addAuthHeader()
+                .exchange()
+                .expectStatus().isOk
+                .expectBody()
+                .consumeWith(document("findBySlugMessage",
+                        pathParameters(parameterWithName("slug").description("Slug of the Message to search for")),
+                        responseFields(*messageFields())))
     }
 
     /**

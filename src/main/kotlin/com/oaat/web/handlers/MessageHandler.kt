@@ -23,11 +23,8 @@ import com.oaat.slugify
 import com.oaat.web.dtos.MessageGetDto
 import com.oaat.web.dtos.MessageSaveDto
 import org.springframework.stereotype.Component
-import org.springframework.web.reactive.function.server.ServerRequest
-import org.springframework.web.reactive.function.server.ServerResponse
+import org.springframework.web.reactive.function.server.*
 import org.springframework.web.reactive.function.server.ServerResponse.ok
-import org.springframework.web.reactive.function.server.bodyToMono
-import org.springframework.web.reactive.function.server.bodyToServerSentEvents
 import java.net.URI
 import javax.validation.Validator
 
@@ -64,24 +61,16 @@ class MessageHandler(override val service: MessageService,
                     .flatMap { entity -> service.save(entity) }
                     .flatMap { entity -> ServerResponse.created(URI.create("$findByIdUrl/${entity.id}")).build() }
 
+    fun findBySlug(req: ServerRequest) =
+            ServerResponse.ok().body(
+                    service.findBySlug(req.pathVariable("slug"))
+                            .map(::entityToGetDto)
+            )
+
     val notifications = messageEventRepository.count()
             .flatMapMany { initialPostCount ->
                 messageEventRepository.findWithTailableCursorBy().skip(initialPostCount) // will only emit new PostEvents
             }.share()
-
-//    override fun findById(req: ServerRequest) =
-//            ok().body(req.queryParam("converter")
-//                    .map { converter ->
-//                        if (converter == "markdown") {
-//                            service.findById(req.pathVariable("id")).map { post ->
-//                                post.copy(
-//                                        headline = markdownConverter.invoke(post.headline),
-//                                        content = markdownConverter.invoke(post.content))
-//                            }
-//                        } else {
-//                            IllegalArgumentException("Only markdown converter is supported").toMono()
-//                        }
-//                    }.orElse(service.findById(req.pathVariable("id"))))
 
     fun notifications(req: ServerRequest) =
             ok().bodyToServerSentEvents(notifications)

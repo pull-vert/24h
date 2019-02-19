@@ -7,8 +7,8 @@ This is the documentation for the API, with curl command, request and response f
 === GET all Messages
 operation::findAllMessages[snippets='curl-request,http-request,http-response,response-fields']
 
-//=== GET Cow by name
-//operation::findByNameCow[snippets='curl-request,http-request,http-response,path-parameters,response-fields']
+=== GET Message by Slug
+operation::findBySlugMessage[snippets='curl-request,http-request,http-response,path-parameters,response-fields']
 
 === GET Message by ID
 operation::findByIdMessage[snippets='curl-request,http-request,http-response,path-parameters,response-fields']
