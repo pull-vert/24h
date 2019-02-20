@@ -1,3 +1,7 @@
+/*
+ * Copyright 2018-2019 OAAT's author : Frédéric Montariol. Use of this source code is governed by the Apache 2.0 license.
+ */
+
 module oaat {
     requires com.fasterxml.jackson.databind;
     requires com.fasterxml.jackson.datatype.jsr310;
@@ -19,6 +23,4 @@ module oaat {
     requires spring.security.web;
     requires spring.web;
     requires spring.webflux;
-
-//    exports one.at.a.time;
 }

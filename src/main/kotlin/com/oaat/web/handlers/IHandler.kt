@@ -1,3 +1,7 @@
+/*
+ * Copyright 2018-2019 OAAT's author : Frédéric Montariol. Use of this source code is governed by the Apache 2.0 license.
+ */
+
 package com.oaat.web.handlers
 
 import com.oaat.entities.Entity
@@ -13,9 +17,6 @@ interface IHandler<T : Entity, GET_DTO : IDto, SAVE_DTO : IDto> : Validate {
 
     val service: IService<T>
 
-    /**
-     * Only override this if save is used
-     */
     val findByIdUrl
         get(): String = TODO("override_findByIdUrl_val_with_actual_Url")
 
