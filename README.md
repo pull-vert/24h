@@ -1,6 +1,6 @@
 # One At A Time Backend
 
-This project is a Social Media with short living unique message per user for 24h.
+This project is the Backend of OAAT, a Social Media with short living unique message per user for 24h.
  
 ## Technical choices
 
@@ -11,7 +11,8 @@ Kotlin routing DSL (based on WebFlux Java functional API) :
 * Reactor based Reactive Programming
 * MongoDB accessed via reactive driver
 * reactor-netty webserver
-* Spring Security (reactive) with session in MongoDB
+* HTTP/2
+* Spring Security (reactive) JWT
 
 ## Build with gradle
 
@@ -59,8 +60,3 @@ docker run -d -p 27017:27017 --name mongo mongo
 2) start spring boot app, with link to mongo
 
 docker run -p 8080:8080 --name oaat --link=mongo oaat
-
-## Inspirations
- * [spring-kotlin-deepdive](https://github.com/sdeleuze/spring-kotlin-deepdive/tree/step4): Kotlin routing DSL
- * [Spring Kotlin support documentation](https://docs.spring.io/spring/docs/current/spring-framework-reference/languages.html#kotlin) for more details.
- * [Spring reactive application with Spring security](https://www.codementor.io/hantsy/build-a-reactive-application-with-angular-5-and-spring-boot-2-0-fv8uif7wg): Nice example of Webflux with Spring Security backend & Angular 5 frontend
