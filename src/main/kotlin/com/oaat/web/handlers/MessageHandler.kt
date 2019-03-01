@@ -18,10 +18,11 @@ import java.net.URI
 import javax.validation.Validator
 
 @Component
-class MessageHandler(override val service: MessageService,
-                     override val validator: Validator,
-                     private val messageEventRepository: MessageEventRepository,
-                     private val markdownConverter: MarkdownConverter
+class MessageHandler(
+        override val service: MessageService,
+        override val validator: Validator,
+        private val messageEventRepository: MessageEventRepository,
+        private val markdownConverter: MarkdownConverter
 ) : IHandler<Message, MessageGetDto, MessageSaveDto> {
     override fun entityToGetDto(entity: Message) =
             MessageGetDto(
