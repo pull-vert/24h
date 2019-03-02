@@ -7,6 +7,7 @@ module oaat {
     requires com.fasterxml.jackson.datatype.jsr310;
     requires java.validation;
     requires jjwt;
+    requires kotlin.logging;
     requires kotlin.stdlib;
     requires org.commonmark;
     requires org.commonmark.ext.autolink;
