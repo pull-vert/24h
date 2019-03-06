@@ -14,6 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.restdocs.payload.PayloadDocumentation.*
 import org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation.document
 import org.springframework.test.web.reactive.server.expectBody
+import org.springframework.restdocs.constraints.ConstraintDescriptions
+import org.springframework.restdocs.snippet.Attributes.key
+import org.springframework.util.StringUtils
+
 
 internal class AuthenticationApiTest(@Autowired private val jwtUtil: JWTUtil) : ApiTest() {
 
@@ -73,14 +77,16 @@ internal class AuthenticationApiTest(@Autowired private val jwtUtil: JWTUtil) : 
 
     @Test
     fun `Auth doc`() {
+        val fields = ConstrainedFields(AuthRequestDto::class.java)
+
         client.post().uri("/auth/")
                 .syncBody(AuthRequestDto("Fred", "password"))
                 .exchange()
                 .expectBody()
                 .consumeWith(document("auth",
                         requestFields(
-                                fieldWithPath("username").description("username for authentication"),
-                                fieldWithPath("password").description("raw (non encrypted) password for authentication")
+                                fields.withPath("username").description("username for authentication"),
+                                fields.withPath("password").description("raw (non encrypted) password for authentication")
                         ),
                         responseFields(
                                 fieldWithPath("token").description("Generated JWT authentication token")

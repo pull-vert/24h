@@ -25,12 +25,17 @@ import org.springframework.http.codec.json.Jackson2JsonDecoder
 import org.springframework.http.codec.json.Jackson2JsonEncoder
 import org.springframework.restdocs.RestDocumentationContextProvider
 import org.springframework.restdocs.RestDocumentationExtension
+import org.springframework.restdocs.constraints.ConstraintDescriptions
 import org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint
+import org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath
+import org.springframework.restdocs.snippet.Attributes.key
 import org.springframework.restdocs.webtestclient.WebTestClientRestDocumentation.documentationConfiguration
 import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.reactive.server.WebTestClient
+import org.springframework.util.StringUtils
 import org.springframework.web.reactive.function.client.ExchangeStrategies
 import reactor.netty.http.client.HttpClient
+
 
 internal typealias ServerResponseError = Map<String, Any>
 
@@ -94,4 +99,14 @@ internal abstract class ApiTest {
      */
     protected fun WebTestClient.RequestHeadersSpec<*>.addAuthHeader(role: Role = ROLE_USER) =
             this.header(HttpHeaders.AUTHORIZATION, buildAuthHeader(role))
+
+    protected class ConstrainedFields internal constructor(input: Class<*>) {
+
+        private val constraintDescriptions = ConstraintDescriptions(input)
+
+        internal fun withPath(path: String) =
+                fieldWithPath(path).attributes(key("constraints").value(
+                        StringUtils.collectionToDelimitedString(
+                                this.constraintDescriptions.descriptionsForProperty(path), "\n", "* ", "")))
+    }
 }

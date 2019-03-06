@@ -212,6 +212,8 @@ internal class MessageApiTest(
 
     @Test
     fun `Message Save doc`() {
+        val fields = ConstrainedFields(MessageSaveDto::class.java)
+
         client.post().uri("/api/messages/")
                 .syncBody(MessageSaveDto("my test message", "my test message content"))
                 .addAuthHeader()
@@ -220,8 +222,8 @@ internal class MessageApiTest(
                 .expectBody()
                 .consumeWith(document("saveMessage",
                         requestFields(
-                                fieldWithPath("title").description("Title of the Message"),
-                                fieldWithPath("content").description("Content of the Message in Markdown format")
+                                fields.withPath("title").description("Title of the Message"),
+                                fields.withPath("content").description("Content of the Message in Markdown format")
                         ),
                         responseHeaders(
                                 headerWithName("Location").description("GET URI for accessing created Message by its ID")
