@@ -4,14 +4,14 @@
 
 package com.oaat.security
 
-import io.jsonwebtoken.ExpiredJwtException
-import io.jsonwebtoken.Jwts
-import io.jsonwebtoken.SignatureAlgorithm
+import io.jsonwebtoken.*
+import mu.KotlinLogging
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Component
 import java.util.*
 
+private val logger = KotlinLogging.logger {}
 
 @Component
 class JWTUtil(
@@ -38,8 +38,25 @@ class JWTUtil(
             if (!jwtParser.isSigned(token)) return false
             // parse token to get claims, will throw ExpiredJwtException if expired at current time
             val claims = getAllClaimsFromToken(token)
-            return claims.getOrDefault("enabled", false) as Boolean
-        } catch(ex: ExpiredJwtException) {
+            val enabled = claims.getOrDefault("enabled", false) as Boolean
+            if (!enabled) {
+                logger.error("Invalid JWT, User ${getUsernameFromToken(token)} is inactive")
+            }
+            return enabled
+        } catch (ex: SignatureException) {
+            logger.error("Invalid JWT signature")
+            return false
+        } catch (ex: MalformedJwtException) {
+            logger.error("Invalid JWT token")
+            return false
+        } catch (ex: ExpiredJwtException) {
+            logger.error("Expired JWT token")
+            return false
+        } catch (ex: UnsupportedJwtException) {
+            logger.error("Unsupported JWT token")
+            return false
+        } catch (ex: IllegalArgumentException) {
+            logger.error("JWT claims string is empty.")
             return false
         }
     }

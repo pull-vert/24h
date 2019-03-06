@@ -5,6 +5,7 @@ buildscript {
         jjwt_version = '0.9.1'
         commonmark_version = '0.12.1'
         jaxb_version = '2.3.1'
+        kotlin_logging_version = '1.6.25'
     }
     repositories {
         mavenCentral()
@@ -66,6 +67,7 @@ dependencies {
     compile("com.atlassian.commonmark:commonmark-ext-autolink:$commonmark_version")
     // removed from java 11, now requires explicit dependency. Required by jjwt
     compile("javax.xml.bind:jaxb-api:$jaxb_version")
+    compile("io.github.microutils:kotlin-logging:$kotlin_logging_version")
 
     runtime('org.springframework.boot:spring-boot-devtools')
 
