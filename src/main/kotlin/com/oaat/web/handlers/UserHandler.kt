@@ -23,6 +23,7 @@ class UserHandler(
     override fun entityToGetDto(entity: User) =
             UserGetDto(
                     entity.username,
+                    entity.email,
                     entity.authorities,
                     entity.isEnabled,
                     entity.id
@@ -31,11 +32,18 @@ class UserHandler(
     override fun saveDtoToEntity(saveDto: UserSaveDto) =
             User(
                     saveDto.username!!,
-                    saveDto.password!!
+                    saveDto.password!!,
+                    saveDto.email!!
             )
 
     override val findByIdUrl = "/api/users"
 
     fun findByUsername(req: ServerRequest) =
             ServerResponse.ok().body(service.findByUsername(req.pathVariable("username")))
+
+    fun checkUsernameAvailability(req: ServerRequest) =
+            ServerResponse.ok().body(service.checkUsernameAvailability(req.pathVariable("username")))
+
+    fun checkEmailAvailability(req: ServerRequest) =
+            ServerResponse.ok().body(service.checkEmailAvailability(req.pathVariable("email")))
 }

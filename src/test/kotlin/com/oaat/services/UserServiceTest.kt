@@ -26,7 +26,7 @@ class UserServiceTest(
     fun `Verify save works and encodes password correcly`() {
         val name = "Bob"
         val rawPassword = "pass"
-        userService.save(User(name, rawPassword))
+        userService.save(User(name, rawPassword, "bob@mail.com"))
                 .test()
                 .assertNext { user ->
                     assertThat(user.username).isEqualTo(name)

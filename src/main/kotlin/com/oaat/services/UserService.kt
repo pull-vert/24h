@@ -38,4 +38,14 @@ class UserService(
                     }.switchIfEmpty { throw UnauthorizedStatusException() }
 
     fun findByUsername(username: String) = repository.findByUsername(username)
+
+    fun checkUsernameAvailability(username: String) =
+            repository.findByUsername(username)
+                    .map { true }
+                    .switchIfEmpty { false.toMono() }
+
+    fun checkEmailAvailability(email: String) =
+            repository.findByEmail(email)
+                    .map { true }
+                    .switchIfEmpty { false.toMono() }
 }

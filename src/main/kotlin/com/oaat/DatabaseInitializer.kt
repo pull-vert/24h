@@ -39,8 +39,8 @@ class DatabaseInitializer(
 
         ops.createCollection(MessageEvent::class.java, CollectionOptions.empty().capped().size(10000))
 
-        val fred = User("Fred", "password", id = USER_FRED_UUID, enabled = true)
-        val boss = User("Boss", "secured_password", mutableListOf(ROLE_ADMIN, ROLE_USER), id = USER_BOSS_UUID, enabled = true)
+        val fred = User("Fred", "password", "fred@mail.com", id = USER_FRED_UUID, enabled = true)
+        val boss = User("Boss", "secured_password", "boss@mail.com", mutableListOf(ROLE_ADMIN, ROLE_USER), id = USER_BOSS_UUID, enabled = true)
         listOf(fred, boss)
                 .toFlux()
                 .flatMap { user -> userService.save(user) }

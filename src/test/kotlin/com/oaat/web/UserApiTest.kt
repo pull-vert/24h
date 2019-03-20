@@ -99,7 +99,7 @@ internal class UserApiTest : ApiTest() {
     @Test
     fun `Verify save User ok`() {
         client.post().uri("/api/users/")
-                .syncBody(UserSaveDto("William", "password_again"))
+                .syncBody(UserSaveDto("William", "password_again", "will@mail.com"))
                 .exchange()
                 .expectStatus().isCreated
                 .expectHeader().value("location") { uri ->
@@ -122,7 +122,7 @@ internal class UserApiTest : ApiTest() {
     @Test
     fun `Verify save User with password too short bean validation fails`() {
         client.post().uri("/api/users/")
-                .syncBody(UserSaveDto("Wrong", "pass"))
+                .syncBody(UserSaveDto("Wrong", "pass", "will@mail.com"))
                 .exchange()
                 .expectStatus().isBadRequest
                 .expectBody<ServerResponseError>()
@@ -155,6 +155,23 @@ internal class UserApiTest : ApiTest() {
     }
 
     @Test
+    fun `Verify save User with bad formed email bean validation fails`() {
+        client.post().uri("/api/users/")
+                .syncBody(UserSaveDto("William", "password_again", "willmail.com"))
+                .exchange()
+                .expectStatus().isBadRequest
+                .expectBody<ServerResponseError>()
+                .consumeWith { exchangeResult ->
+                    val error = exchangeResult.responseBody!!
+                    assertThat(error["message"] as String).contains("email(willmail.com)")
+                    assertThat(error["path"]).isEqualTo("/api/users/")
+                    assertThat(error["timestamp"]).isNotNull
+                    assertThat(error["status"]).isEqualTo(400)
+                    assertThat(error["error"]).isEqualTo("Bad Request")
+                }
+    }
+
+    @Test
     fun `User findById doc`() {
         client.get().uri("/api/users/{id}", USER_BOSS_UUID)
                 .addAuthHeader()
@@ -165,6 +182,7 @@ internal class UserApiTest : ApiTest() {
                         pathParameters(parameterWithName("id").description("ID of the User to search for")),
                         responseFields(
                                 fieldWithPath("username").description("username"),
+                                fieldWithPath("email").description("email"),
                                 fieldWithPath("authorities.[]").description("An array of authorities (roles)"),
                                 fieldWithPath("enabled").description("if user is active or disabled"),
 //                                fieldWithPath("credentialsNonExpired").description("if user's credential is active or expired"),
@@ -179,14 +197,15 @@ internal class UserApiTest : ApiTest() {
         val fields = ConstrainedFields(UserSaveDto::class.java)
 
         client.post().uri("/api/users/")
-                .syncBody(UserSaveDto("User", "password_again_again"))
+                .syncBody(UserSaveDto("User", "password", "valid@mail.com"))
                 .exchange()
                 .expectStatus().isCreated
                 .expectBody()
                 .consumeWith(document("saveUser",
                         requestFields(
                                 fields.withPath("username").description("username"),
-                                fields.withPath("password").description("raw (non encrypted) password")
+                                fields.withPath("password").description("raw (non encrypted) password"),
+                                fields.withPath("email").description("email")
                         ),
                         responseHeaders(
                                 headerWithName("Location").description("GET URI for accessing created User by its ID")

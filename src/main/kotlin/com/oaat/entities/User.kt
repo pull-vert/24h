@@ -13,6 +13,7 @@ import java.util.*
 data class User(
         private var username: String,
         private var password: String,
+        var email: String,
         private var authorities: MutableList<Role> = mutableListOf(Role.ROLE_USER), // Default Role : USER
         private var enabled: Boolean = false,
         private val id: String = UUID.randomUUID().toString()

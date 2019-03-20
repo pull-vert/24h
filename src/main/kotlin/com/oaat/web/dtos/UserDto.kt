@@ -5,6 +5,7 @@
 package com.oaat.web.dtos
 
 import com.oaat.entities.Role
+import javax.validation.constraints.Email
 import javax.validation.constraints.NotEmpty
 import javax.validation.constraints.Size
 
@@ -15,11 +16,17 @@ data class UserSaveDto(
 
         @field:NotEmpty
         @field:Size(min = 8, max = 200)
-        val password: String?
+        val password: String?,
+
+        @field:NotEmpty
+        @field:Size(min = 8, max = 200)
+        @field:Email
+        val email: String?
 ) : IDto
 
 data class UserGetDto(
         val username: String,
+        val email: String,
         val authorities: List<Role>,
         val enabled: Boolean,
         val id: String

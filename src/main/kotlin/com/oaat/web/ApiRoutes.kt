@@ -26,6 +26,8 @@ class ApiRoutes(private val userHandler: UserHandler,
                 "/users".nest {
                     GET("/{id}", userHandler::findById)
                     GET("/username/{username}", userHandler::findByUsername)
+                    GET("/username/checkUsernameAvailability", userHandler::checkUsernameAvailability)
+                    GET("/username/checkEmailAvailability", userHandler::checkEmailAvailability)
                     POST("/") { req -> userHandler.save(req) }
                     DELETE("/{id}", userHandler::deleteById)
                 }

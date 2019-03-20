@@ -26,18 +26,23 @@ class SecurityConfig(
     @Bean
     fun passwordEncoder() = BCryptPasswordEncoder()
 
+    /**
+     * Configure endpoints security : roles required, if need authenticated caller...
+     */
     @Bean
     fun securitygWebFilterChain(http: ServerHttpSecurity) =
-            http.csrf().disable()
+            http
+                    .csrf().disable()
                     .formLogin().disable()
                     .httpBasic().disable()
-                    .csrf().disable()
                     .logout().disable()
                     .authenticationManager(authenticationManager)
                     .securityContextRepository(securityContextRepository)
                     .authorizeExchange()
                     .pathMatchers(HttpMethod.OPTIONS).permitAll()
-                    .pathMatchers(HttpMethod.POST,"/auth", "/api/users").permitAll()
+                    .pathMatchers(HttpMethod.POST, "/auth", "/api/users").permitAll()
+                    .pathMatchers(HttpMethod.GET, "/api/users/checkUsernameAvailability",
+                            "/api/users/checkEmailAvailability").permitAll()
                     .pathMatchers(HttpMethod.DELETE, "/api/users/{userId}").hasRole("ADMIN")
                     .pathMatchers("/api/**").hasRole("USER")
                     .anyExchange().authenticated()

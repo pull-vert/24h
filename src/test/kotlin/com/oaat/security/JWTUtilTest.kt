@@ -48,5 +48,6 @@ class JWTUtilTest {
         assertThat(jwtUtil.validateToken(EXPIRED_TOKEN)).isFalse()
     }
 
-    private fun generateToken(active: Boolean = true) = jwtUtil.generateToken(User("Fred", "password", enabled = active))
+    private fun generateToken(active: Boolean = true) =
+            jwtUtil.generateToken(User("Fred", "password", "fred@mail.com", enabled = active))
 }
