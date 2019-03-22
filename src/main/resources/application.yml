@@ -7,6 +7,11 @@ server:
   http2:
     enabled: true
 
+spring:
+  main:
+#    should be disabled in prod
+    lazy-initialization: true
+
 jwt:
   secret: mysecret
   expiration: 28800
