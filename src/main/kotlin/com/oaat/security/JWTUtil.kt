@@ -15,8 +15,8 @@ private val logger = KotlinLogging.logger {}
 
 @Component
 class JWTUtil(
-        @Value("\${jwt.secret}") private val secret: String,
-        @Value("\${jwt.expiration}") private val expirationTime: Long //in second
+        @Value("\${oaat.jwt.secret}") private val secret: String,
+        @Value("\${oaat.jwt.expiration}") private val expirationTime: Long //in second
 ) {
 
     private val jwtParser = Jwts.parser().setSigningKey(secret.toByteArray())

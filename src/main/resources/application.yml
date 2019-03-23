@@ -12,6 +12,7 @@ spring:
 #    should be disabled in prod
     lazy-initialization: true
 
-jwt:
+oaat:
+ jwt:
   secret: mysecret
   expiration: 28800

@@ -11,15 +11,15 @@ import javax.validation.constraints.Size
 
 data class UserSaveDto(
         @field:NotEmpty
-        @field:Size(min = 2, max = 200)
+        @field:Size(min = 2, max = 20)
         val username: String?,
 
         @field:NotEmpty
-        @field:Size(min = 8, max = 200)
+        @field:Size(min = 8, max = 20)
         val password: String?,
 
         @field:NotEmpty
-        @field:Size(min = 8, max = 200)
+        @field:Size(min = 5, max = 50)
         @field:Email
         val email: String?
 ) : IDto

@@ -128,7 +128,7 @@ internal class UserApiTest : ApiTest() {
                 .expectBody<ServerResponseError>()
                 .consumeWith { exchangeResult ->
                     val error = exchangeResult.responseBody!!
-                    assertThat(error["message"] as String).contains("password(pass)", "8", "200")
+                    assertThat(error["message"] as String).contains("password(pass)", "8", "20")
                     assertThat(error["path"]).isEqualTo("/api/users/")
                     assertThat(error["timestamp"]).isNotNull
                     assertThat(error["status"]).isEqualTo(400)
