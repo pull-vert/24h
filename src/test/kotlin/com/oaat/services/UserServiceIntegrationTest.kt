@@ -17,7 +17,7 @@ import reactor.test.test
 
 @ExtendWith(SpringExtension::class)
 @SpringBootTest
-class UserServiceTest(
+class UserServiceIntegrationTest(
         @Autowired private val userService: UserService,
         @Autowired private val passwordEncoder: PasswordEncoder
 ) {

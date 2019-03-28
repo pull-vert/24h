@@ -59,4 +59,21 @@ class UserRepositoryTest(
                     assertThat(user.lastModifiedDate).isNotEqualTo(lastModifiedDate)
                 }.verifyComplete()
     }
+
+    @Test
+    fun `Verify findByEmail returns existing Fred User`() {
+        userRepository.findByEmail("fred@mail.com")
+                .test()
+                .consumeNextWith { user ->
+                    assertThat(user.username).isEqualTo("Fred")
+                    assertThat((user as User).id).isNotNull()
+                }.verifyComplete()
+    }
+
+    @Test
+    fun `Verify findByEmail returns no John User`() {
+        userRepository.findByEmail("john@mail.com")
+                .test()
+                .verifyComplete()
+    }
 }

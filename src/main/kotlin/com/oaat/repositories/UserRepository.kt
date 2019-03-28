@@ -13,7 +13,7 @@ import reactor.core.publisher.Mono
 interface UserRepository : IRepository<User>, ReactiveUserDetailsService {
 
     /**
-     * Find the [User] by username.
+     * Find the [User] by email.
      *
      * @param email the email to look up
      * @return the [User]. Cannot be null
