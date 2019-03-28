@@ -125,6 +125,6 @@ bootJar {
 
 // execute ./gradlew wrapper then remove .gradle directory when version change
 wrapper {
-    gradleVersion='5.3'
+    gradleVersion='5.3.1'
     distributionType=Wrapper.DistributionType.ALL
 }
