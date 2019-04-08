@@ -4,7 +4,6 @@
 
 package com.oaat.services
 
-import com.oaat.USER_FRED_UUID
 import com.oaat.entities.User
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -35,12 +34,5 @@ class UserServiceIntegrationTest(
                             .matches { password -> passwordEncoder.matches(rawPassword, password) }
                     assertThat(user.isEnabled).isFalse()
                 }.verifyComplete()
-    }
-
-    @Test
-    fun `Verify deleteById is working`() {
-        userService.deleteById(USER_FRED_UUID)
-                .test()
-                .verifyComplete()
     }
 }

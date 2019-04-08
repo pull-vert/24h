@@ -20,13 +20,13 @@ import reactor.test.test
 
 @ExtendWith(MockitoExtension::class)
 class MessageServiceTest {
-    lateinit var messageService: MessageService
+    lateinit var service: MessageService
     lateinit var repository: MessageRepository
 
     @BeforeEach
     private fun before(@Mock repository: MessageRepository) {
         this.repository = repository
-        this.messageService = MessageService(repository)
+        this.service = MessageService(repository)
     }
 
     @Test
@@ -36,7 +36,7 @@ class MessageServiceTest {
         given(repository.findBySlug(slug))
                 .willReturn(msg.toMono())
 
-        messageService.findBySlug(slug)
+        service.findBySlug(slug)
                 .test()
                 .assertNext { message ->
                     assertThat(message).isEqualTo(msg)
@@ -49,7 +49,7 @@ class MessageServiceTest {
         given(repository.findBySlug(slug))
                 .willReturn(Mono.empty())
 
-        messageService.findBySlug(slug)
+        service.findBySlug(slug)
                 .test()
                 .consumeErrorWith { thrown ->
                     assertThat(thrown).isInstanceOf(NotFoundStatusException::class.java)
