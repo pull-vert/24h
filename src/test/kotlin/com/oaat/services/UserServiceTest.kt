@@ -37,4 +37,6 @@ class UserServiceTest {
                 .test()
                 .verifyComplete()
     }
+
+    // todo test all UserService functions except "save"
 }

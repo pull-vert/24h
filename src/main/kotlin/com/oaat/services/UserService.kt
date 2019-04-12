@@ -10,8 +10,10 @@ import com.oaat.security.JWTUtil
 import com.oaat.web.UnauthorizedStatusException
 import com.oaat.web.dtos.AuthRequestDto
 import com.oaat.web.dtos.AuthResponseDto
+import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
+import reactor.core.publisher.Mono
 import reactor.core.publisher.switchIfEmpty
 import reactor.core.publisher.toMono
 
@@ -37,7 +39,7 @@ class UserService(
                         }
                     }.switchIfEmpty { throw UnauthorizedStatusException() }
 
-    fun findByUsername(username: String) = repository.findByUsername(username)
+    fun findByUsername(username: String): Mono<UserDetails> = repository.findByUsername(username)
 
     fun checkUsernameAvailability(username: String) =
             repository.findByUsername(username)
