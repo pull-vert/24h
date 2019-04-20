@@ -20,8 +20,8 @@ import reactor.test.test
 
 @ExtendWith(MockitoExtension::class)
 class MessageServiceTest {
-    lateinit var service: MessageService
-    lateinit var repository: MessageRepository
+    private lateinit var service: MessageService
+    private lateinit var repository: MessageRepository
 
     @BeforeEach
     private fun before(@Mock repository: MessageRepository) {
